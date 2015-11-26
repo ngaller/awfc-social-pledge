@@ -7,25 +7,30 @@ namespace AWC\SocialPledge;
  *
  * @package AWC\SocialPledge
  */
-class ButtonDef
+class ShortcodeDef
 {
     public function registerShortCode()
     {
-        add_shortcode('awc_social_pledge_button', [$this, 'render']);
+        add_shortcode('awc_social_pledge_button', [$this, 'renderButton']);
+        add_shortcode('awc_social_pledge_summary', [$this, 'renderSummary']);
         wp_register_script('awc-social-pledge-button', plugins_url('assets/js/awc_social_pledge.js', __DIR__),
             [], false, true);
     }
 
-    public function render($atts)
+    public function renderButton($atts)
     {
         $atts = shortcode_atts(['category' => '', 'category2' => ''], $atts);
 
         $category = $atts['category'] . ',' . $atts['category2'];
-        $link = get_term_link($category, CustomPostType::TAXONOMY);
+        $link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
         $html = "<a class='social-pledge-button' href='$link'>Pledge</a>";
-//        $html = "<button class='social-pledge-button' data-pledge-category='$category'>Pledge</button>";
-
         wp_enqueue_script('awc-social-pledge-button');
         return $html;
+    }
+
+    public function renderSummary(/** @noinspection PhpUnusedParameterInspection */ $atts)
+    {
+        wp_enqueue_script('awc-social-pledge-button');
+        return '<div class="social-pledge-summary"></div>';
     }
 }

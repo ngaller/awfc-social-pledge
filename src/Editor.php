@@ -22,16 +22,17 @@ class Editor
      */
     public function integrateWithVC()
     {
-        $this->registerVcContent();
+        $this->registerSocialPledgeButton();
+        $this->registerSocialPledgeSummary();
     }
 
-    private function registerVcContent()
+    private function registerSocialPledgeButton()
     {
         $terms = $this->getPledgeCategories();
         vc_map([
             'name' => __('AWC Social Pledge Button', 'awc-social-pledge'),
             'base' => 'awc_social_pledge_button',
-            'icon' => plugins_url('assets/img/pledge_icon_editor.png', __FILE__),
+            'icon' => plugins_url('assets/img/pledge_icon_editor.png', __DIR__),
             'category' => __('Content', 'js_composer'),
             'params' => [
                 [
@@ -49,6 +50,16 @@ class Editor
                     'value' => $terms
                 ]
             ]
+        ]);
+    }
+
+    private function registerSocialPledgeSummary()
+    {
+        vc_map([
+            'name' => __('AWC Social Pledge Summary', 'awc-social-pledge'),
+            'base' => 'awc_social_pledge_summary',
+            'icon' => plugins_url('assets/img/pledge_icon_editor.png', __DIR__),
+            'category' => __('Content', 'js_composer')
         ]);
     }
 

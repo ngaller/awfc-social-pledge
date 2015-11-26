@@ -21,7 +21,7 @@ class Init
     {
         // order matters!
         (new CustomPostType())->register();
-        (new ButtonDef())->registerShortCode();
+        (new ShortcodeDef())->registerShortCode();
         (new Editor())->integrateWithVC();
     }
 }
