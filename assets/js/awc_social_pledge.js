@@ -60,13 +60,15 @@ jQuery(document).ready(function ($) {
 
     $('.social-pledge-button').click(function () {
         var img = findRelatedImage($(this));
-        var url = this.href;
-        if (img) {
-            url += '&img=' + encodeURIComponent(img);
-            url += '&screen_width=' + $(window).width();
+        if(!img) {
+            console.warn('Error: unable to find image');
+            return false;
         }
+        var url = this.href;
+        url += '&img=' + encodeURIComponent(img);
+        url += '&screen_width=' + $(window).width();
         simpleLightbox(url, function (dlg) {
-            addShareButtons(dlg, url);
+            addShareButtons(dlg, img, url);
         });
 
         return false;
@@ -80,41 +82,51 @@ jQuery(document).ready(function ($) {
 
     ////////////////// Sharing Functions
 
+    function validateShare(container) {
+        if (container.find('input[type=checkbox]:checked').length == 0) {
+            container.find('.pledge_selection_error').show();
+            return false;
+        } else {
+            container.find('.pledge_selection_error').hide();
+            return true;
+        }
+    }
+
+    function getPledgeTexts(container) {
+        return container.find('input[type=checkbox]:checked').map(function () {
+            return $(this).next('label').text();
+        }).toArray();
+    }
+
     // URL that will give sharing options, according to selected pledges in the specified container
     function getPledgeShareUrl(container, baseUrl) {
         var selected = container.find('input[type=checkbox]:checked').map(function () {
             return this.value
         }).toArray();
-        if (selected.length == 0) {
-            container.find('.pledge_selection_error').show();
-            return false;
-        } else {
-            container.find('.pledge_selection_error').hide();
-            return baseUrl + '&type=share' +
-                '&title=' + encodeURIComponent(document.title) +
-                '&url=' + encodeURIComponent(location.href) +
-                '&selected=' + selected.join(',');
-        }
+
+        return baseUrl + '&type=share' +
+            '&title=' + encodeURIComponent(document.title) +
+            '&url=' + encodeURIComponent(location.href) +
+            '&selected=' + selected.join(',');
     }
 
     // activate the sharing buttons in the designated container.
     // baseUrl is the pledge_category url, used to determine the share URL
-    function addShareButtons(container, baseUrl) {
+    function addShareButtons(container, originalImage, baseUrl) {
         var button = container.find('.share.facebook');
-        if(button.length) {
+        if (button.length) {
             setupFacebookSdk(button);
             button.click(function () {
-                var shareUrl = getPledgeShareUrl(container, baseUrl);
-                if (shareUrl)
-                    shareFacebook(this, shareUrl);
+                if (validateShare(container)) {
+                    shareFacebook(this, container, originalImage);
+                }
                 return false;
             });
         }
-
     }
 
     function setupFacebookSdk(button) {
-        if(typeof FB != 'undefined')
+        if (typeof FB != 'undefined')
             return;
 
         button.addClass('disabled');
@@ -140,12 +152,17 @@ jQuery(document).ready(function ($) {
         }(document, 'script', 'facebook-jssdk'));
     }
 
-    function shareFacebook(button, shareUrl) {
+    function shareFacebook(button, container, originalImage) {
         if (typeof FB != 'undefined') {
             $(button).addClass('disabled');
+            var url = location.href;
+            var pledges = getPledgeTexts(container).join('&nbsp;&nbsp;');
+
             FB.ui({
-                method: 'share',
-                href: shareUrl
+                method: 'feed',
+                link: url,
+                picture: originalImage,
+                description: pledges
             }, function () {
                 $(button).removeClass('disabled');
                 // close dialog?
