@@ -33,12 +33,12 @@ function get_pledge_thumbnail()
 
 ?>
 <!doctype html>
-<meta property="og:title" content=""/>
+<meta property="og:title" content="<?= $_GET['title']; ?>"/>
 <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
 <!-- URL to the actual page - this will be used to aggregate shares -->
-<meta property="og:url" content=""/>
-<meta property="og:image" content=""/>
-<meta property="og:description" content=""/>
+<meta property="og:url" content="<?= $_GET['url']; ?>"/>
+<meta property="og:image" content="<?= get_pledge_thumbnail()[0]; ?>"/>
+<meta property="og:description" content="Some content"/>
 
 
 <?php
