@@ -7,6 +7,13 @@
  * Created On: 11/28/2015
  */
 
+function maybe_redirect()
+{
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebookexternalhit') === false) {
+        header('Location: ' . $_GET['url']);
+    }
+}
+
 // Return image information (url, width, height), based on the img parameter.
 function get_pledge_thumbnail()
 {
@@ -25,26 +32,32 @@ function get_pledge_thumbnail()
     $image_id = $rs[0];
     if (!empty($image_id)) {
         $image = image_downsize($image_id, [$width, $width]);
-//        print_r($image);
         return $image;
     }
     return false;
 }
 
+maybe_redirect();
+
 ?>
-<!doctype html>
-<meta property="og:title" content="<?= $_GET['title']; ?>"/>
-<meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
-<!-- URL to the actual page - this will be used to aggregate shares -->
-<meta property="og:url" content="<?= $_GET['url']; ?>"/>
-<meta property="og:image" content="<?= get_pledge_thumbnail()[0]; ?>"/>
-<meta property="og:description" content="Some content"/>
-
-
+    <!doctype html>
+    <meta property="og:title" content="<?= $_GET['title']; ?>"/>
+    <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
+    <!-- URL to the actual page - this will be used to aggregate shares -->
+    <!-- not working right now, as the crawler follows the URL and uses it to generate the content... -->
+    <!--<meta property="og:url" content=""/>-->
+    <meta property="og:image" content="<?= get_pledge_thumbnail()[0]; ?>"/>
+    <meta property="og:description" content="
 <?php
 
-while (have_posts()) {
-    the_post(); ?>
+    while (have_posts()) {
+        the_post();
+        echo esc_attr(get_the_content());
+    }
+    ?>
+"/>
+
+
     <div class="pledge_category">
         <input title="<?php the_title(); ?>" id="pledge_<?php the_ID(); ?>" type="checkbox"
                class="pledge_select">
@@ -53,6 +66,3 @@ while (have_posts()) {
             <?php the_content(); ?>
         </label>
     </div>
-    <?php
-}
-?>
