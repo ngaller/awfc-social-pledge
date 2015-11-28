@@ -38,4 +38,8 @@ spl_autoload_register(function ($class) {
     }
 });
 
+
+define( 'AWC_SOCIAL_PLEDGE_PLUGIN', __FILE__ );
+define( 'AWC_SOCIAL_PLEDGE_PLUGIN_BASENAME', plugin_basename( AWC_SOCIAL_PLEDGE_PLUGIN ) );
+
 add_action('wp_loaded', [new \AWC\SocialPledge\Init(), 'initialize']);

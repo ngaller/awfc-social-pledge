@@ -75,7 +75,11 @@ class CustomPostType
         $term = get_queried_object();
         if (!empty($term->slug)) {
             if ($term->taxonomy == self::TAXONOMY) {
-                return __DIR__ . '/templates/pledge_category.php';
+                if (isset($_GET['type']) && $_GET['type'] == 'share') {
+                    return __DIR__ . '/templates/pledge_category_sharing.php';
+                } else {
+                    return __DIR__ . '/templates/pledge_category.php';
+                }
             }
         }
         return $template;

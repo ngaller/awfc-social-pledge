@@ -23,7 +23,8 @@ class ShortcodeDef
 
         $category = $atts['category'] . ',' . $atts['category2'];
         $link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
-        $html = "<a class='social-pledge-button' href='$link'>Pledge</a>";
+        $esc_category = esc_attr($category);
+        $html = "<a class='social-pledge-button' href='$link' data-pledge-categories='$esc_category'>Pledge</a>";
         wp_enqueue_script('awc-social-pledge-button');
         return $html;
     }
