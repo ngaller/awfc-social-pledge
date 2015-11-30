@@ -25,27 +25,45 @@ jQuery(document).ready(function ($) {
         content.css('margin-top', top + 'px');
     }
 
+    function closeLightbox() {
+        $('.pledge_dialog_overlay').remove();
+    }
+
     // very simple dialog function (we can't use colorbox, because the links within the dialog might point to colorbox)
     function simpleLightbox(url, onDialogReadyCb) {
         var bodyHeight = $(document.body).height();
-        var overlay = $('<div style="position: absolute; top: 0; left: 0; width: 100%; height: ' + bodyHeight + 'px;' +
-            'background: rgba(0,0,0,.7); text-align: center; z-index: 10"></div>')
-            .appendTo(document.body);
+        closeLightbox();
+
+        // create overlay.  style is defined here to avoid making an extra request for the CSS
+        var style = ['position: absolute',
+            'top: 0', 'left: 0', 'width: 100%', 'height: ' + bodyHeight + 'px',
+            'background: rgba(0,0,0,.7)',
+            'text-align: center',
+            'z-index: 10'].join(';');
+
+        var overlay = $('<div class="pledge_dialog_overlay" style="' + style + '"></div>')
+            .appendTo(document.body)
+            .click(function (evt) {
+                // allow closing dialog on overlay click
+                if (evt.target === this) {
+                    $(this).remove();
+                }
+            });
 
         var content = $('<div class="pledge_dialog" style="background: white; width: 200px; ' +
+                // for centering with CSS.  unfortunately this prevents scrolling on mobile
                 //'position: relative; top: 50%; transform: translateY(-50%);' +
             'margin: 0 auto; box-sizing: border-box ">' +
             '<div id="cboxLoadingGraphic" style="position: static; width: 200px; height: 200px"></div>' +
             '</div>')
-            .appendTo(overlay)
-            .click(function (evt) {
-                // prevent bubble to overlay
-                evt.stopPropagation();
-            });
+            .appendTo(overlay);
+
         centerDialog(content);
         $.get(url, null, function (result) {
             // set the dialog's content and resize it to contain the image
             content.html(result);
+            $('<div class="dlg_close">&times;</div>').prependTo(content)
+                .click(closeLightbox);
             var img = content.find('.pledge_category_image');
             if (img.length) {
                 content.width(img.width());
@@ -53,14 +71,12 @@ jQuery(document).ready(function ($) {
             onDialogReadyCb(content);
             centerDialog(content);
         });
-        overlay.click(function () {
-            overlay.remove();
-        });
     }
 
-    $('.social-pledge-button').click(function () {
+    var pledgeButtons = $('.social-pledge-button');
+    pledgeButtons.click(function () {
         var img = findRelatedImage($(this));
-        if(!img) {
+        if (!img) {
             console.warn('Error: unable to find image');
             return false;
         }
@@ -68,6 +84,7 @@ jQuery(document).ready(function ($) {
         url += '&img=' + encodeURIComponent(img);
         url += '&screen_width=' + $(window).width();
         simpleLightbox(url, function (dlg) {
+            resetColorbox(dlg);
             addShareButtons(dlg, img, url);
         });
 
@@ -76,9 +93,39 @@ jQuery(document).ready(function ($) {
 
     ////////////////// Summary UI
 
-    // TODO: set up handlers for social pledge summary
-    //$('.social-pledge-summary')
+    function loadPledgeSummary(container, categories) {
+        var url = pledgeButtons[0].href.replace(/(pledge_category=).*&?/, '$1' + encodeURIComponent(categories));
+        $.get(url, null, function (result) {
+            // set the dialog's content and resize it to contain the image
+            container.html(result);
+            var img = $('.image-fullwidth img').attr('src');
+            var shareUrl = url + '&img=' + encodeURIComponent(img);
+            addShareButtons(container, img, shareUrl);
+            resetColorbox(container);
+        });
+    }
 
+    var pledgeSummary = $('.social-pledge-summary');
+    if (pledgeSummary.length) {
+        var categories = [];
+        pledgeButtons.each(function () {
+            var cats = $(this).data('pledge-categories').split(',');
+            cats.forEach(function (cat) {
+                if (categories.indexOf(cat) == -1)
+                    categories.push(cat);
+            });
+        });
+        loadPledgeSummary(pledgeSummary, categories);
+    }
+
+    ////////////////// Miscellaneous
+
+    // reset the colorbox handler for the content that was just added
+    function resetColorbox(dlg) {
+        if ($.fn.colorbox)
+        // copy those settings from the wp-colorbox.js file
+            dlg.find(".wp-colorbox-iframe").colorbox({iframe: true, width: "80%", height: "80%"});
+    }
 
     ////////////////// Sharing Functions
 

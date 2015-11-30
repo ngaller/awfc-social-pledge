@@ -21,15 +21,25 @@ class ShortcodeDef
     {
         $atts = shortcode_atts(['category' => '', 'category2' => ''], $atts);
 
-        $category = $atts['category'] . ',' . $atts['category2'];
-        $link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
-        $esc_category = esc_attr($category);
+        //$link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
+        $link = get_term_link($atts['category'], CustomPostType::TAXONOMY);
+        if(is_wp_error($link)){
+            $msg = 'Invalid category ' . $atts['category'] . ': ' . $link->get_error_message();
+            error_log($msg);
+            return '<span style="display: none">' . $msg . '</span>';
+        }
+        if ($atts['category2']) {
+            $link .= ',' . $atts['category2'];
+        }
+
+        $esc_category = esc_attr($atts['category'] . ',' . $atts['category2']);
         $html = "<a class='social-pledge-button' href='$link' data-pledge-categories='$esc_category'>Pledge</a>";
         wp_enqueue_script('awc-social-pledge-button');
         return $html;
     }
 
-    public function renderSummary(/** @noinspection PhpUnusedParameterInspection */ $atts)
+    public function renderSummary(/** @noinspection PhpUnusedParameterInspection */
+        $atts)
     {
         wp_enqueue_script('awc-social-pledge-button');
         return '<div class="social-pledge-summary"></div>';

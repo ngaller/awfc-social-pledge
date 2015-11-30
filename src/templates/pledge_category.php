@@ -65,8 +65,17 @@ function show_pledge_thumbnail()
 ?>
     <!--suppress CssUnusedSymbol -->
     <style>
+        /* Styling for the pledge dialog.  Ideally this should be defined in a separate CSS */
         .pledge_dialog {
             padding: 20px;
+        }
+
+        .pledge_dialog .dlg_close {
+            font-size: 23px;
+            text-align: right;
+            font-weight: bold;
+            margin-top: -20px;
+            cursor: pointer;
         }
 
         .pledge_category_list {
@@ -102,6 +111,8 @@ function show_pledge_thumbnail()
             display: flex;
             flex-flow: row wrap;
             justify-content: space-between;
+            /* avoid getting too wide on the desktop pledge summary */
+            max-width: 500px;
         }
 
         .share_buttons .btn {
