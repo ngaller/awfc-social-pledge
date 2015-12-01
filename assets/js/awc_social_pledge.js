@@ -141,7 +141,8 @@ jQuery(document).ready(function ($) {
 
     function getPledgeTexts(container) {
         return container.find('input[type=checkbox]:checked').map(function () {
-            return $(this).next('label').text();
+            // bit of a hack because we make this dependent on the structure of the label vs checkbox
+            return $(this).parent('label').text().trim();
         }).toArray();
     }
 
@@ -204,7 +205,6 @@ jQuery(document).ready(function ($) {
             $(button).addClass('disabled');
             var url = location.href;
             var pledges = getPledgeTexts(container).join('&nbsp;&nbsp;');
-
             FB.ui({
                 method: 'feed',
                 link: url,
