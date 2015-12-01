@@ -191,11 +191,11 @@ function show_pledge_thumbnail()
         while (have_posts()) {
             the_post(); ?>
             <div class="pledge_category">
-                <input title="<?php the_title(); ?>" id="pledge_<?php the_ID(); ?>" type="checkbox"
-                       value="<?php the_ID(); ?>"
-                       class="pledge_select">
+                <label class="pledge_content">
+                    <input title="<?php the_title(); ?>" type="checkbox"
+                           value="<?php the_ID(); ?>"
+                           class="pledge_select">
 
-                <label for="pledge_<?php the_ID(); ?>" class="pledge_content">
                     <?php the_content(); ?>
                 </label>
             </div>
