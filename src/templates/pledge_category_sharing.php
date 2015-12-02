@@ -10,7 +10,7 @@
 function maybe_redirect()
 {
     if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebookexternalhit') === false) {
-        header('Location: ' . $_GET['url']);
+//        header('Location: ' . $_GET['url']);
     }
 }
 

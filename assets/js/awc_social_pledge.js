@@ -139,23 +139,23 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    function getPledgeText(pledgeCheckbox) {
+        // bit of a hack because we make this dependent on the structure of the label vs checkbox
+        return $(pledgeCheckbox).parent('label').text().trim();
+    }
+
     function getPledgeTexts(container) {
         return container.find('input[type=checkbox]:checked').map(function () {
-            // bit of a hack because we make this dependent on the structure of the label vs checkbox
-            return $(this).parent('label').text().trim();
+            return getPledgeText(this);
         }).toArray();
     }
 
-    // URL that will give sharing options, according to selected pledges in the specified container
-    function getPledgeShareUrl(container, baseUrl) {
-        var selected = container.find('input[type=checkbox]:checked').map(function () {
-            return this.value
-        }).toArray();
-
+    // URL that will give sharing options, according to selected pledge ids
+    function getPledgeShareUrl(selectedIds, baseUrl) {
         return baseUrl + '&type=share' +
             '&title=' + encodeURIComponent(document.title) +
             '&url=' + encodeURIComponent(location.href) +
-            '&selected=' + selected.join(',');
+            '&selected=' + encodeURIComponent(selectedIds.join(','));
     }
 
     // activate the sharing buttons in the designated container.
@@ -169,6 +169,15 @@ jQuery(document).ready(function ($) {
                     shareFacebook(this, container, originalImage);
                 }
                 return false;
+            });
+        }
+
+        button = container.find('.share.twitter');
+        if (button.length) {
+            button.click(function () {
+                if (validateShare(container)) {
+                    shareTwitter(this, container, baseUrl);
+                }
             });
         }
     }
@@ -218,6 +227,22 @@ jQuery(document).ready(function ($) {
             if (typeof console != 'undefined')
                 console.warn('Facebook SDK was not loaded');
         }
+    }
+
+    function shareTwitter(button, container, baseUrl) {
+        var selectedPledges = container.find('input[type=checkbox]:checked');
+        selectedPledges.each(function () {
+            var twitterUrl = 'https://twitter.com/intent/tweet';
+            var pledgeText = getPledgeText(this);
+            var pledgeId = this.value;
+            twitterUrl += '?text=' + encodeURIComponent(pledgeText);
+            twitterUrl += '&url=' + encodeURIComponent(getPledgeShareUrl([pledgeId], baseUrl));
+            var via = $(button).data('twitter-user');
+            if (via) {
+                twitterUrl += '&via=' + via;
+            }
+            window.open(twitterUrl);
+        });
     }
 
 });
