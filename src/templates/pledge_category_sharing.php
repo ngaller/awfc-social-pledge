@@ -39,30 +39,35 @@ function get_pledge_thumbnail()
 
 maybe_redirect();
 
+$content = '';
+while (have_posts()) {
+    the_post();
+    $content .= get_the_content();
+}
+$image = get_pledge_thumbnail()[0];
+
 ?>
-    <!doctype html>
-    <meta property="og:title" content="<?= $_GET['title']; ?>"/>
-    <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
-    <!-- URL to the actual page - this will be used to aggregate shares -->
-    <!-- not working right now, as the crawler follows the URL and uses it to generate the content... -->
-    <!--<meta property="og:url" content=""/>-->
-    <meta property="og:image" content="<?= get_pledge_thumbnail()[0]; ?>"/>
-    <meta property="og:description" content="
-<?php
+<!doctype html>
+<!-- Open Graph -->
+<meta property="og:title" content="<?= $_GET['title']; ?>"/>
+<meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
+<!-- URL to the actual page - this will be used to aggregate shares -->
+<!-- not working right now, as the crawler follows the URL and uses it to generate the content... -->
+<!--<meta property="og:url" content=""/>-->
+<meta property="og:image" content="<?= $image ?>"/>
+<meta property="og:description" content="<?= $content ?>"/>
 
-    while (have_posts()) {
-        the_post();
-        echo esc_attr(get_the_content());
-    }
-    ?>
-"/>
+<!-- Twitter -->
+<meta property="twitter:card" content="Summary"/>
+<meta property="twitter:description" content="<?= $content ?>"/>
+<meta property="twitter:image" content="<?= $image ?>"/>
 
 
-    <div class="pledge_category">
-        <input title="<?php the_title(); ?>" id="pledge_<?php the_ID(); ?>" type="checkbox"
-               class="pledge_select">
+<div class="pledge_category">
+    <input title="<?php the_title(); ?>" id="pledge_<?php the_ID(); ?>" type="checkbox"
+           class="pledge_select">
 
-        <label for="pledge_<?php the_ID(); ?>" class="pledge_content">
-            <?php the_content(); ?>
-        </label>
-    </div>
+    <label for="pledge_<?php the_ID(); ?>" class="pledge_content">
+        <?php the_content(); ?>
+    </label>
+</div>
