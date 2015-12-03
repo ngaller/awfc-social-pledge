@@ -3,7 +3,8 @@ use AWC\SocialPledge\OptionPage;
 
 /**
  * pledge_category.php
- * Template used for rendering the pledge form with all selected categories.
+ * Template used for rendering the pledge form with all selected categories - this is used for the user to select
+ * their pledge and share it.
  * Optionally an image can be passed.
  * Created By: nico
  * Created On: 11/25/2015

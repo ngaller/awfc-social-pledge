@@ -12,6 +12,7 @@ class OptionPage
 {
     const AWC_SOCIALPLEDGE_SETTINGS = 'awc_social_pledge_settings';
     const OPTION_FACEBOOK_APPID = 'facebook_appid';
+    const OPTION_TWITTER_SCREENNAME = 'twitter_screenname';
 
     public function registerOptionPage()
     {
@@ -33,6 +34,9 @@ class OptionPage
         add_settings_field(self::OPTION_FACEBOOK_APPID, 'Facebook App Id',
             array(&$this, 'createSettingsTextbox'), self::AWC_SOCIALPLEDGE_SETTINGS,
             'default', array('name' => self::OPTION_FACEBOOK_APPID));
+        add_settings_field(self::OPTION_TWITTER_SCREENNAME, 'Twitter Screenname',
+            array(&$this, 'createSettingsTextbox'), self::AWC_SOCIALPLEDGE_SETTINGS,
+            'default', array('name' => self::OPTION_TWITTER_SCREENNAME));
     }
 
     public function adminMenu()
