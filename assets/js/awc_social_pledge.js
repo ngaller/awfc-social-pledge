@@ -54,7 +54,7 @@ jQuery(document).ready(function ($) {
                 // for centering with CSS.  unfortunately this prevents scrolling on mobile
                 //'position: relative; top: 50%; transform: translateY(-50%);' +
             'margin: 0 auto; box-sizing: border-box ">' +
-            '<div id="cboxLoadingGraphic" style="position: static; width: 200px; height: 200px"></div>' +
+            '<div id="cboxLoadingGraphic" style="position: static; width: 100%; height: 200px"></div>' +
             '</div>')
             .appendTo(overlay);
 
