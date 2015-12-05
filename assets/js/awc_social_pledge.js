@@ -95,12 +95,12 @@ jQuery(document).ready(function ($) {
 
     function loadPledgeSummary(container, categories) {
         var url = pledgeButtons[0].href.replace(/(pledge_category=).*&?/, '$1' + encodeURIComponent(categories));
+        var img = $('.image-fullwidth img').attr('src');
+        url += '&img=' + encodeURIComponent(img) + '&show_image=0';
         $.get(url, null, function (result) {
             // set the dialog's content and resize it to contain the image
             container.html(result);
-            var img = $('.image-fullwidth img').attr('src');
-            var shareUrl = url + '&img=' + encodeURIComponent(img);
-            addShareButtons(container, img, shareUrl);
+            addShareButtons(container, img, url);
             resetColorbox(container);
         });
     }

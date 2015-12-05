@@ -178,6 +178,7 @@ function show_pledge_thumbnail()
         }
     </style>
     <div class="pledge_category_list">
+        <h5><?= $pledgeData->getInstructions(); ?></h5>
         <div class="thumbnail_container">
             <?php show_pledge_thumbnail(); ?>
         </div>

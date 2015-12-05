@@ -26,16 +26,17 @@ class SocialCampaign
     {
         register_taxonomy(self::TAXONOMY, self::PORTFOLIO_POST_TYPE, [
             'labels' => [
-                'name' => 'Social Campaign',
-                'singular_name' => 'Social Campaign'
+                'name' => 'Social Campaigns',
+                'singular_name' => 'Social Campaign',
+                'add_new_item' => 'Add New Campaign (Name = Hashtag, Description = Instructions)'
             ],
             'public' => false,
+            'rewrite' => false,
             'show_ui' => true,
             'show_in_menu' => true,
             'show_tagcloud' => false,
             'show_in_quick_edit' => true,
             'show_admin_column' => true,
-            'rewrite' => false,
             'query_var' => false,
             'description' => 'Used to associate portfolio items with a specific campaign'
         ]);

@@ -36,7 +36,7 @@ class PledgeDialogData
     public function getHashtags()
     {
         if ($this->socialCampaign) {
-            return $this->socialCampaign->name;
+            return str_replace(' ', '', $this->socialCampaign->name);
         }
         return '';
     }
