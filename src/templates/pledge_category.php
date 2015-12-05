@@ -1,53 +1,22 @@
 <?php
 use AWC\SocialPledge\OptionPage;
+use AWC\SocialPledge\PledgeDialogData;
 
 /**
  * pledge_category.php
  * Template used for rendering the pledge form with all selected categories - this is used for the user to select
  * their pledge and share it.
- * Optionally an image can be passed.
+ * Query string parameters:
+ * - img = URL of image to be shared.
+ * - screen_width = Px width of viewport.  This is used to size the image.
+ * - show_image = if set to "0", this will prevent actually showing the image.
+ * - parent_id
  * Created By: nico
  * Created On: 11/25/2015
  */
 
-// Calculate optimal width for the thumbnail image, based on the screen_width parameter
-function get_pledge_thumbnail_width()
-{
-    if (isset($_GET['screen_width']))
-        $viewport_width = $_GET['screen_width'];
-    else
-        $viewport_width = 768;
-    if ($viewport_width < 600) {
-        $width = $viewport_width - 40;  // 40 being the padding
-    } else {
-        $width = 500;
-    }
-    return $width;
-}
+$pledgeData = new PledgeDialogData(@$_GET['img'], @$_GET['parent_id']);
 
-// Return image information (url, width, height), based on the img parameter.
-function get_pledge_thumbnail()
-{
-    global $wpdb;
-
-    if (isset($_GET['img']))
-        $attachment_url = $_GET['img'];
-    else
-        return false;
-    $width = get_pledge_thumbnail_width();
-
-    // remove the part before /uploads, because it will have the CDN instead of the real attachment url
-    $attachment_url = preg_replace('/^.*(\/uploads\/)/', '$1', $attachment_url);
-    /** @noinspection SqlDialectInspection */
-    $rs = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid like '%s';", '%' . $attachment_url));
-    $image_id = $rs[0];
-    if (!empty($image_id)) {
-        $image = image_downsize($image_id, [$width, $width]);
-//        print_r($image);
-        return $image;
-    }
-    return false;
-}
 
 function show_pledge_thumbnail()
 {
@@ -55,7 +24,10 @@ function show_pledge_thumbnail()
         // allow a show_image parameter to be passed to prevent showing the thunbnail, this is useful for the summary form
         return;
     }
-    $image = get_pledge_thumbnail();
+    global $pledgeData;
+
+    $screenWidth = isset($_GET['screen_width']) ? $_GET['screen_width'] : 0;
+    $image = $pledgeData->getPledgeThumbnail($screenWidth);
     if ($image) {
         echo "<img class='pledge_category_image' alt='Associated image to be posted'
                  src='$image[0]' style='width: $image[1]px; height: $image[2]px' />";
@@ -208,13 +180,16 @@ function show_pledge_thumbnail()
         Please select your pledge first
     </div>
     <div class="share_buttons">
+        <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
+        <input type="hidden" name="hashtags" value="<?= esc_attr($pledgeData->getHashtags()); ?>"/>
         <a class="btn share facebook" href="#"
            data-appid="<?= OptionPage::getOption(OptionPage::OPTION_FACEBOOK_APPID) ?>">
             <i class="fa fa-facebook"></i> Facebook</a>
-        <a class="btn share twitter" href="#"><i class="fa fa-twitter"></i> Twitter</a>
+        <a class="btn share twitter" href="#">
+            <i class="fa fa-twitter"></i> Twitter</a>
         <a class="btn share gplus" href="#"><i class="fa fa-google-plus"></i> Google+</a>
         <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
-        <a class="btn share tumblr" href="#"><i class="fa fa-tumblr"></i> Tumblr</a>
-        <!--        <br style="clear: both"/>-->
+        <a class="btn share tumblr" href="#">
+            <i class="fa fa-tumblr"></i> Tumblr</a>
     </div>
 <?php

@@ -8,7 +8,7 @@ namespace AWC\SocialPledge;
  *
  * @package AWC\SocialPledge
  */
-class SharingMeta
+class SharingMetaHeader
 {
 
 }
