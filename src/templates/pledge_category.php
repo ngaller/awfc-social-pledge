@@ -38,9 +38,35 @@ function show_pledge_thumbnail()
 ?>
     <!--suppress CssUnusedSymbol -->
     <style>
-        /* Styling for the pledge dialog.  Ideally this should be defined in a separate CSS */
+        /* Styling for the pledge dialog.  Ideally this should be defined in a separate CSS.  For performance reason
+           we load it inline instead. */
         .pledge_dialog {
             padding: 20px;
+            text-align: left;
+        }
+
+        .pledge_dialog label {
+            text-transform: none;
+            font-weight: normal;
+            font-size: 100% !important;
+            line-height: 1.5;
+            /* ensure wrapping labels will not indent underneath their checkbox */
+            text-indent: -15px;
+            padding-left: 15px;
+            display: block;
+            color: #6e7177;  /* match color on body */
+        }
+
+        .pledge_dialog .pledge_select {
+            width: 13px;
+            height: 13px;
+            padding: 0;
+            margin: 0;
+            vertical-align: bottom;
+            position: relative;
+            /* vertically align checkboxes with labels.  If the font size and/or line height is changed this
+               value may have to be changed */
+            top: -1px;
         }
 
         .pledge_dialog .dlg_close {
@@ -56,7 +82,8 @@ function show_pledge_thumbnail()
         }
 
         .pledge_category_list p {
-            margin: 0;
+            line-height: 1.5;
+            display: inline;
         }
 
         .pledge_category {
@@ -65,10 +92,6 @@ function show_pledge_thumbnail()
 
         .pledge_category_list .thumbnail_container {
             text-align: center;
-        }
-
-        .pledge_category .pledge_select {
-            float: left;
         }
 
         .pledge_category .pledge_content {
