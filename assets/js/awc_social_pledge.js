@@ -166,12 +166,15 @@ jQuery(document).ready(function ($) {
     }
 
     function openPopup(url) {
-        // TODO: calculate optimal width / height
+        // TODO: calculate optimal width / height, top and left
         // (popup will resize, but we don't want to go over the device dimensions, I don't think)
         var width = 600;
         var height = 600;
+        var top = $(window).height / 2 - height / 2;
+        var left = $(window).width / 2 - width / 2;
         window.open(url, '_blank',
-            'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + height + ',width=' + width);
+            'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + height + ',width=' + width +
+            ',top=' + top + ',left=' + left);
     }
 
     // activate the sharing buttons in the designated container.
