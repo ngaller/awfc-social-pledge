@@ -107,6 +107,8 @@ class SharingMetaData
         $imgUrl = wp_get_attachment_url($this->imageId);
         ?>
         <!-- Open Graph -->
+        <meta property="og:type" content="article"/>
+        <meta property="og:url" content="<?= $this->permalink ?>"/>
         <meta property="og:title" content="<?= $this->title ?>"/>
         <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
         <meta property="og:image" content="<?= $imgUrl ?>"/>
