@@ -125,6 +125,8 @@ class SharingMetaData
     private function generateGooglePlusTags()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
+        // this is opengraph, like for facebook, but we put the description as a title, because G+ does not post the
+        // description apparently??
         ?>
         <!-- Open Graph -->
         <meta property="og:type" content="article"/>
@@ -134,6 +136,7 @@ class SharingMetaData
         <meta property="og:image" content="<?= esc_attr($imgUrl) ?>"/>
         <meta property="og:description" content="<?= esc_attr($this->description) ?>"/>
         <meta property="og:headline" content="<?= esc_attr($this->description) ?>"/>
+        <title><?= esc_html($this->title) ?></title>
         <?php
     }
 
