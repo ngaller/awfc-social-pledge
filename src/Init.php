@@ -15,7 +15,7 @@ namespace AWC\SocialPledge;
 class Init
 {
     /**
-     * Called on WP load - this will bootstrap the rest of the plugin.
+     * Called on init - this will bootstrap the rest of the plugin.
      */
     function initialize()
     {
@@ -23,6 +23,13 @@ class Init
         (new PledgePostType())->register();
         (new SocialSharePostType())->register();
         (new SocialCampaignTaxonomy())->register();
+    }
+
+    /**
+     * Called on wp_loaded - for functions that depend on WP being loaded
+     */
+    function onWpLoaded()
+    {
         (new ShortcodeDef())->registerShortCode();
         (new Editor())->integrateWithVC();
         (new OptionPage())->registerOptionPage();
