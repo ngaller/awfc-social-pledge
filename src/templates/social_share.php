@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html itemscope itemtype="http://schema.org/Article">
 <head>
     <?php
     /**
@@ -15,8 +15,3 @@
         $shareData = \AWC\SocialPledge\SocialSharePostType::getSocialMetaData();
         $shareData->generateMetaTags();
     }
-    ?>
-</head>
-<body>
-</body>
-</html>
