@@ -69,9 +69,10 @@ class SharingMetaData
         //https://www.facebook.com/dialog/feed?app_id=145634995501895&display=popup&caption=An%20example%20caption&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https://developers.facebook.com/tools/explorer
         $appId = OptionPage::getOption(OptionPage::OPTION_FACEBOOK_APPID);
         $imgUrl = wp_get_attachment_url($this->imageId);
+        $return = add_query_arg('return', '1', $this->permalink);
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
-        "&redirect_uri=" . // TODO
-        "&link=" . urlencode($this->permalink) .
+        "&redirect_uri=" . urlencode($return) .
+        "&href=" . urlencode($this->permalink) .
         "&description=" . urlencode($this->description) .
         "&picture=" . urlencode($imgUrl) .
         "&caption=" . urlencode($this->title);

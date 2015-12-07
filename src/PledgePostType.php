@@ -13,6 +13,26 @@ class PledgePostType
     const POST_TYPE = "pledge";
     const TAXONOMY = "pledge_category";
 
+    public static function getSelectedPledgeText($selectedPledgeIds)
+    {
+        if (!is_array($selectedPledgeIds)) {
+            $selectedPledgeIds = explode(',', $selectedPledgeIds);
+        }
+        $posts = get_posts([
+            'post_type' => self::POST_TYPE,
+            'include' => $selectedPledgeIds
+        ]);
+        $content = array_map(function($p) {
+            $content = $p->post_content;
+            // remove links and their content
+            $content = preg_replace('/<a.*<\/a>/', '', $content);
+            // remove other tags
+            $content = wp_strip_all_tags($content, true);
+            return $content;
+        }, $posts);
+        return join('&nbsp;&nbsp;', $content);
+    }
+
     public function register()
     {
         $this->registerPostType();

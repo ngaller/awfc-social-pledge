@@ -31,7 +31,7 @@ class SocialSharePostType
     public static function createSocialShare($imgUrl, $shareType, $parentId, $selectedPledgeIds)
     {
         $shareData = new SharingMetaData();
-        $shareData->description = 'Some description, Pledge text?  Or something more generic?';
+        $shareData->description = PledgePostType::getSelectedPledgeText($selectedPledgeIds);
         $shareData->title = 'Site title?  Or somethign else?';
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;
@@ -113,6 +113,8 @@ class SocialSharePostType
             if ($this->isCrawler()) {
                 $this->trackCrawled();
                 return __DIR__ . '/templates/social_share.php';
+            } else if (@$_GET['return'] == '1') {
+                return __DIR__ . '/templates/close_me.php';
             } else {
                 $this->trackOpen();
                 $this->redirect();
@@ -125,9 +127,9 @@ class SocialSharePostType
     {
         $ua = $_SERVER['HTTP_USER_AGENT'];
         return stripos($ua, 'facebookexternalhit') !== false ||
-            stripos($ua, 'twitterbot') !== false ||
-            stripos($ua, 'linkedinbot') !== false ||
-            stripos($ua, 'Google (+https://developers.google.com/+/web/snippet/)') !== false;
+        stripos($ua, 'twitterbot') !== false ||
+        stripos($ua, 'linkedinbot') !== false ||
+        stripos($ua, 'Google (+https://developers.google.com/+/web/snippet/)') !== false;
 
         // not sure what to use for tumblr
     }
