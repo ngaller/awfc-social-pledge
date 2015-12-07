@@ -65,7 +65,7 @@ class Editor
 
     private function getPledgeCategories()
     {
-        $terms = get_terms([CustomPostType::TAXONOMY]);
+        $terms = get_terms([PledgePostType::TAXONOMY]);
         if (is_wp_error($terms)) {
             throw new \Exception('Unable to retrieve pledge categories: ' . $terms->get_error_message());
         }

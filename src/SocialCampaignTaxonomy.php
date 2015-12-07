@@ -4,12 +4,12 @@
 namespace AWC\SocialPledge;
 
 /**
- * SocialCampaign.php
+ * SocialCampaignTaxonomy.php
  * This is used to define the campaign that a portfolio is associated with (custom Wordpress taxonomy)
  *
  * @package AWC\SocialPledge
  */
-class SocialCampaign
+class SocialCampaignTaxonomy
 {
     const TAXONOMY = "social_campaign";
     const PORTFOLIO_POST_TYPE = "portfolio";
@@ -40,5 +40,25 @@ class SocialCampaign
             'query_var' => false,
             'description' => 'Used to associate portfolio items with a specific campaign'
         ]);
+    }
+
+
+    /**
+     * Retrieve social campaign tag for the specified post (or null, if there isn't one)
+     *
+     * @param int $postId
+     * @return mixed|null
+     */
+    public static function getSocialCampaign($postId)
+    {
+        $terms = wp_get_object_terms($postId, self::TAXONOMY);
+        if (!empty($terms)) {
+            if (!is_wp_error($terms)) {
+                return $terms[0];
+            } else {
+                error_log('Error retrieving terms: ' . $terms->get_error_message());
+            }
+        }
+        return null;
     }
 }

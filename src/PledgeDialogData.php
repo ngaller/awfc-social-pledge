@@ -16,16 +16,18 @@ class PledgeDialogData
 {
     private $imageId;
     private $socialCampaign;
+    private $parentId;
 
     /**
      * PledgeDialogData constructor.
      * @param string $img URL of image to associate with the share
      * @param int $parentPostId
      */
-    function __construct($img, $parentPostId)
+    function __construct($img, $parentPostId = 0)
     {
-        $this->imageId = $this->getAttachmentId($img);
-        $this->socialCampaign = $this->getSocialCampaign($parentPostId);
+        $this->imageId = Utils::getAttachmentId($img);
+        $this->socialCampaign = SocialCampaignTaxonomy::getSocialCampaign($parentPostId);
+        $this->parentId = $parentPostId;
     }
 
     /**
@@ -62,8 +64,9 @@ class PledgeDialogData
     public function getShareUrl()
     {
         $url = home_url('/');
+        $url .= '?pid=' . $this->parentId;
         if ($this->imageId) {
-            $url .= '?img=' . $this->imageId;
+            $url .= '&img=' . $this->imageId;
         }
         return $url;
     }
@@ -84,22 +87,6 @@ class PledgeDialogData
         return $image;
     }
 
-    /**
-     * Return image id given an attachment URL
-     *
-     * @param $url
-     * @return int
-     */
-    private function getAttachmentId($url)
-    {
-        global $wpdb;
-
-        // remove the part before /uploads, because it will have the CDN instead of the real attachment url
-        $url = preg_replace('/^.*(\/uploads\/)/', '$1', $url);
-        /** @noinspection SqlDialectInspection */
-        $rs = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid like '%s';", '%' . $url));
-        return $rs[0];
-    }
 
     /**
      * Calculate optimal width for the thumbnail image, based on the screen_width parameter
@@ -120,22 +107,4 @@ class PledgeDialogData
         return $width;
     }
 
-    /**
-     * Retrieve social campaign tag for the specified post (or null, if there isn't one)
-     *
-     * @param int $postId
-     * @return mixed|null
-     */
-    private function getSocialCampaign($postId)
-    {
-        $terms = wp_get_object_terms($postId, SocialCampaign::TAXONOMY);
-        if (!empty($terms)) {
-            if (!is_wp_error($terms)) {
-                return $terms[0];
-            } else {
-                error_log('Error retrieving terms: ' . $terms->get_error_message());
-            }
-        }
-        return null;
-    }
 }

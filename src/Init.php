@@ -20,10 +20,11 @@ class Init
     function initialize()
     {
         // order matters!
-        (new CustomPostType())->register();
+        (new PledgePostType())->register();
+        (new SocialSharePostType())->register();
+        (new SocialCampaignTaxonomy())->register();
         (new ShortcodeDef())->registerShortCode();
         (new Editor())->integrateWithVC();
         (new OptionPage())->registerOptionPage();
-        (new SocialCampaign())->register();
     }
 }

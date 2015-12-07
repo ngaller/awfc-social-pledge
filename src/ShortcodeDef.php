@@ -22,7 +22,7 @@ class ShortcodeDef
         $atts = shortcode_atts(['category' => '', 'category2' => ''], $atts);
 
         //$link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
-        $link = get_term_link($atts['category'], CustomPostType::TAXONOMY);
+        $link = get_term_link($atts['category'], PledgePostType::TAXONOMY);
         if (is_wp_error($link)) {
             $msg = 'Invalid category ' . $atts['category'] . ': ' . $link->get_error_message();
             error_log($msg);

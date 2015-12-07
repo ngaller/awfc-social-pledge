@@ -206,14 +206,13 @@ function show_pledge_thumbnail()
     <div class="share_buttons">
         <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
         <input type="hidden" name="hashtags" value="<?= esc_attr($pledgeData->getHashtags()); ?>"/>
-        <a class="btn share facebook" href="#"
-           data-appid="<?= OptionPage::getOption(OptionPage::OPTION_FACEBOOK_APPID) ?>">
+        <a class="btn share facebook" data-share-type="facebook" href="javascript:void(0)">
             <i class="fa fa-facebook"></i> Facebook</a>
-        <a class="btn share twitter" href="#">
+        <a class="btn share twitter" data-share-type="twitter" href="javascript:void(0)">
             <i class="fa fa-twitter"></i> Twitter</a>
-        <a class="btn share gplus" href="#"><i class="fa fa-google-plus"></i> Google+</a>
+        <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i class="fa fa-google-plus"></i> Google+</a>
         <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
-        <a class="btn share tumblr" href="#">
+        <a class="btn share tumblr" data-share-type="tumblr" href="javascript:void(0)">
             <i class="fa fa-tumblr"></i> Tumblr</a>
     </div>
 <?php

@@ -8,7 +8,7 @@
 namespace AWC\SocialPledge;
 
 
-class CustomPostType
+class PledgePostType
 {
     const POST_TYPE = "pledge";
     const TAXONOMY = "pledge_category";
@@ -76,7 +76,7 @@ class CustomPostType
         if (!empty($term->slug)) {
             if ($term->taxonomy == self::TAXONOMY) {
                 if (isset($_GET['type']) && $_GET['type'] == 'share') {
-                    return __DIR__ . '/templates/pledge_category_sharing.php';
+                    return __DIR__ . '/templates/pledge_category_share.php';
                 } else {
                     return __DIR__ . '/templates/pledge_category.php';
                 }

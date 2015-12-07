@@ -150,99 +150,134 @@ jQuery(document).ready(function ($) {
         }).toArray();
     }
 
+    function getPledgeIds(container) {
+        return container.find('input[type=checkbox]:checked').map(function () {
+            return this.value;
+        }).toArray();
+    }
+
     // URL that will give sharing options, according to selected pledge ids
-    function getPledgeShareUrl(selectedIds, baseUrl) {
+    function getSocialShareUrl(selectedIds, shareType, baseUrl) {
         return baseUrl + '&type=share' +
+            '&share=' + shareType +
             '&title=' + encodeURIComponent(document.title) +
             '&url=' + encodeURIComponent(location.href) +
             '&selected=' + encodeURIComponent(selectedIds.join(','));
     }
 
+    function openPopup(url) {
+        // TODO: calculate optimal width / height
+        // (popup will resize, but we don't want to go over the device dimensions, I don't think)
+        var width = 600;
+        var height = 600;
+        window.open(url, '_blank',
+            'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + height + ',width=' + width);
+    }
+
     // activate the sharing buttons in the designated container.
-    // baseUrl is the pledge_category url, used to determine the share URL
-    function addShareButtons(container, originalImage, baseUrl) {
-        var button = container.find('.share.facebook');
-        if (button.length) {
-            setupFacebookSdk(button);
-            button.click(function () {
-                if (validateShare(container)) {
-                    shareFacebook(this, container, originalImage);
-                }
-                return false;
-            });
-        }
-
-        button = container.find('.share.twitter');
-        if (button.length) {
-            button.click(function () {
-                if (validateShare(container)) {
-                    shareTwitter(this, container, baseUrl);
-                }
-            });
-        }
-    }
-
-    function setupFacebookSdk(button) {
-        if (typeof FB != 'undefined')
-            return;
-
-        button.addClass('disabled');
-        var appId = button.data('appid');
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: appId,
-                xfbml: false,
-                version: 'v2.5'
-            });
-            button.removeClass('disabled');
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
+    function addShareButtons(container, originalImage, pledgeCategoryUrl) {
+        container.find('.share').click(function () {
+            if (validateShare(container)) {
+                var selectedIds = getPledgeIds(container);
+                var shareType = $(this).data('share-type');
+                var shareUrl = getSocialShareUrl(selectedIds, shareType, pledgeCategoryUrl);
+                openPopup(shareUrl);
+                //window.open('', '_blank', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+                //getSocialShareUrl(, pledgeCategoryUrl, function (shareUrl) {
+                //    $(this).removeClass('disabled');
+                //    if ($(this).hasClass('facebook')) {
+                //        shareFacebook($(this), shareUrl, container, originalImage);
+                //    } else if ($(this).hasClass('twitter')) {
+                //
+                //    }
+                //});
             }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    }
-
-    function shareFacebook(button, container, originalImage) {
-        if (typeof FB != 'undefined') {
-            $(button).addClass('disabled');
-            var url = location.href;
-            var pledges = getPledgeTexts(container).join('&nbsp;&nbsp;');
-            FB.ui({
-                method: 'feed',
-                link: url,
-                picture: originalImage,
-                description: pledges
-            }, function () {
-                $(button).removeClass('disabled');
-                // close dialog?
-            });
-        } else {
-            if (typeof console != 'undefined')
-                console.warn('Facebook SDK was not loaded');
-        }
-    }
-
-    function shareTwitter(button, container, baseUrl) {
-        var selectedPledges = container.find('input[type=checkbox]:checked');
-        selectedPledges.each(function () {
-            var twitterUrl = 'https://twitter.com/intent/tweet';
-            var pledgeText = getPledgeText(this);
-            var pledgeId = this.value;
-            twitterUrl += '?text=' + encodeURIComponent(pledgeText);
-            twitterUrl += '&url=' + encodeURIComponent(getPledgeShareUrl([pledgeId], baseUrl));
-            var via = $(button).data('twitter-user');
-            if (via) {
-                twitterUrl += '&via=' + via;
-            }
-            window.open(twitterUrl);
         });
+        //setupFacebookSdk(container.find('.share.facebook'));
+        //var button = container.find('.share.facebook');
+        //if (button.length) {
+        //
+        //    button.click(function () {
+        //        if (validateShare(container)) {
+        //            shareFacebook(this, container, originalImage);
+        //        }
+        //        return false;
+        //    });
+        //}
+        //
+        //button = container.find('.share.twitter');
+        //if (button.length) {
+        //    button.click(function () {
+        //        if (validateShare(container)) {
+        //            shareTwitter(this, container, baseUrl);
+        //        }
+        //    });
+        //}
     }
+
+    //function setupFacebookSdk(button) {
+    //    if (typeof FB != 'undefined')
+    //        return;
+    //
+    //    button.addClass('disabled');
+    //    var appId = button.data('appid');
+    //    window.fbAsyncInit = function () {
+    //        FB.init({
+    //            appId: appId,
+    //            xfbml: false,
+    //            version: 'v2.5'
+    //        });
+    //        button.removeClass('disabled');
+    //    };
+    //
+    //    (function (d, s, id) {
+    //        var js, fjs = d.getElementsByTagName(s)[0];
+    //        if (d.getElementById(id)) {
+    //            return;
+    //        }
+    //        js = d.createElement(s);
+    //        js.id = id;
+    //        js.src = "//connect.facebook.net/en_US/sdk.js";
+    //        fjs.parentNode.insertBefore(js, fjs);
+    //    }(document, 'script', 'facebook-jssdk'));
+    //}
+    //
+    //function shareFacebook(button, shareUrl, container, originalImage) {
+    //    if (typeof FB != 'undefined') {
+    //        $(button).addClass('disabled');
+    //        var pledges = getPledgeTexts(container).join('&nbsp;&nbsp;');
+    //        FB.ui({
+    //            method: 'feed',
+    //            link: shareUrl,
+    //            // content for the share.
+    //            // this must be included, otherwise they won't get the preview for their post - it only appears
+    //            // once facebook has crawled it.
+    //            picture: originalImage,
+    //            description: pledges
+    //        }, function () {
+    //            $(button).removeClass('disabled');
+    //            // close dialog?
+    //        });
+    //    } else {
+    //        if (typeof console != 'undefined')
+    //            console.warn('Facebook SDK was not loaded');
+    //    }
+    //}
+    //
+    //function shareTwitter(button, container, baseUrl) {
+    //    var selectedPledges = container.find('input[type=checkbox]:checked');
+    //    selectedPledges.each(function () {
+    //        var twitterUrl = 'https://twitter.com/intent/tweet';
+    //        var pledgeText = getPledgeText(this);
+    //        var pledgeId = this.value;
+    //        twitterUrl += '?text=' + encodeURIComponent(pledgeText);
+    //        twitterUrl += '&url=' + encodeURIComponent(getPledgeShareUrl([pledgeId], baseUrl));
+    //        var via = $(button).data('twitter-user');
+    //        if (via) {
+    //            twitterUrl += '&via=' + via;
+    //        }
+    //        window.open(twitterUrl);
+    //    });
+    //}
 
 });
