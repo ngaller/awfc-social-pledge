@@ -36,14 +36,15 @@ class SocialSharePostType
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);
-        if($campaign){
+        if ($campaign) {
             // strip hash just in case they included them
             $shareData->hashtags = str_replace('#', '', $campaign->name);
-            $shareData->campaignId = $campaign->ID;
+            $shareData->campaignId = $campaign->term_id;
         }
         $postId = wp_insert_post([
             'post_type' => self::POST_TYPE,
-            'post_content' => serialize($shareData)
+            'post_content' => urlencode(serialize($shareData)),
+            'post_status' => 'publish'
         ]);
         $shareData->permalink = get_permalink($postId);
 //        update_post_meta($postId, 'selected_pledges', $selectedPledgeIds);
@@ -63,8 +64,15 @@ class SocialSharePostType
     {
         /** @var \WP_Post $post */
         $post = get_post($postId);
-        /** @var SharingMetaData $shareData */
-        $shareData = unserialize($post->post_content);
+        $serialized = $post->post_content;
+        if (!$serialized) {
+            die("Empty sharing data");
+        }
+        $serialized = urldecode($serialized);
+        $shareData = unserialize($serialized);
+        if (!$shareData) {
+            die("Invalid sharing data");
+        }
         $shareData->permalink = get_permalink($post->ID);
 
         return $shareData;
@@ -156,6 +164,7 @@ class SocialSharePostType
      */
     private function redirect()
     {
+        // TODO: figure out what URL to use
         wp_redirect(get_home_url());
         exit;
     }
