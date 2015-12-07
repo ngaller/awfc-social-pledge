@@ -21,8 +21,9 @@ class OptionPage
         add_filter("plugin_action_links_" . AWC_SOCIAL_PLEDGE_PLUGIN_BASENAME, [&$this, 'settingsLink']);
     }
 
-    public function settingsLink($links) {
-        $settings = '<a href="options-general.php?page='. self::AWC_SOCIALPLEDGE_SETTINGS .'">Settings</a>';
+    public function settingsLink($links)
+    {
+        $settings = '<a href="options-general.php?page=' . self::AWC_SOCIALPLEDGE_SETTINGS . '">Settings</a>';
         array_unshift($links, $settings);
         return $links;
     }
@@ -74,6 +75,10 @@ class OptionPage
 
     public function sanitizeOptions($options)
     {
+        if (isset($options[self::OPTION_TWITTER_SCREENNAME])) {
+            // remove @ from twitter name if they included it
+            $options[self::OPTION_TWITTER_SCREENNAME] = str_replace('@', '', $options[self::OPTION_TWITTER_SCREENNAME]);
+        }
         return $options;
     }
 

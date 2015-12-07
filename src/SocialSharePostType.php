@@ -31,12 +31,14 @@ class SocialSharePostType
     public static function createSocialShare($imgUrl, $shareType, $parentId, $selectedPledgeIds)
     {
         $shareData = new SharingMetaData();
-        $shareData->description = 'Some description, this should have the pledge text I guess';
+        $shareData->description = 'Some description, Pledge text?  Or something more generic?';
+        $shareData->title = 'Site title?  Or somethign else?';
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);
         if($campaign){
-            $shareData->hashtags = $campaign->name;
+            // strip hash just in case they included them
+            $shareData->hashtags = str_replace('#', '', $campaign->name);
             $shareData->campaignId = $campaign->ID;
         }
         $postId = wp_insert_post([

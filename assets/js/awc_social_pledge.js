@@ -85,7 +85,7 @@ jQuery(document).ready(function ($) {
         url += '&screen_width=' + $(window).width();
         simpleLightbox(url, function (dlg) {
             resetColorbox(dlg);
-            addShareButtons(dlg, img, url);
+            addShareButtons(dlg, url);
         });
 
         return false;
@@ -100,7 +100,7 @@ jQuery(document).ready(function ($) {
         $.get(url, null, function (result) {
             // set the dialog's content and resize it to contain the image
             container.html(result);
-            addShareButtons(container, img, url);
+            addShareButtons(container, url);
             resetColorbox(container);
         });
     }
@@ -139,16 +139,16 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    function getPledgeText(pledgeCheckbox) {
-        // bit of a hack because we make this dependent on the structure of the label vs checkbox
-        return $(pledgeCheckbox).parent('label').text().trim();
-    }
-
-    function getPledgeTexts(container) {
-        return container.find('input[type=checkbox]:checked').map(function () {
-            return getPledgeText(this);
-        }).toArray();
-    }
+    //function getPledgeText(pledgeCheckbox) {
+    //    // bit of a hack because we make this dependent on the structure of the label vs checkbox
+    //    return $(pledgeCheckbox).parent('label').text().trim();
+    //}
+    //
+    //function getPledgeTexts(container) {
+    //    return container.find('input[type=checkbox]:checked').map(function () {
+    //        return getPledgeText(this);
+    //    }).toArray();
+    //}
 
     function getPledgeIds(container) {
         return container.find('input[type=checkbox]:checked').map(function () {
@@ -175,7 +175,7 @@ jQuery(document).ready(function ($) {
     }
 
     // activate the sharing buttons in the designated container.
-    function addShareButtons(container, originalImage, pledgeCategoryUrl) {
+    function addShareButtons(container, pledgeCategoryUrl) {
         container.find('.share').click(function () {
             if (validateShare(container)) {
                 var selectedIds = getPledgeIds(container);

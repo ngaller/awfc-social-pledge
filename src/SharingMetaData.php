@@ -96,35 +96,38 @@ class SharingMetaData
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
             '&text=' . urlencode($this->description) .
             '&hashtags=' . urlencode($this->hashtags);
-        if ($via)
+        if ($via) {
             $url .= '&via=' . urlencode($via);
+        }
         return $url;
     }
 
     private function generateOpenGraphTags()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
-?>
+        ?>
         <!-- Open Graph -->
         <meta property="og:title" content="<?= $this->title ?>"/>
         <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
-        <!-- URL to the actual page - this will be used to aggregate shares -->
-        <!-- not working right now, as the crawler follows the URL and uses it to generate the content... -->
-        <!--<meta property="og:url" content=""/>-->
         <meta property="og:image" content="<?= $imgUrl ?>"/>
         <meta property="og:description" content="<?= $this->description ?>"/>
-<?php
+        <?php
     }
 
     private function generateTwitterCardTags()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
-?>
+        ?>
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image"/>
-        <meta property="twitter:title" content="<?= $this->title ?>"/>
-        <meta property="twitter:description" content="<?= $this->description ?>"/>
-        <meta property="twitter:image" content="<?= $imgUrl ?>"/>
-<?php
+        <meta property="twitter:title" content="<?= esc_attr($this->title) ?>"/>
+        <meta property="twitter:description" content="<?= esc_attr($this->description) ?>"/>
+        <meta property="twitter:image" content="<?= esc_attr($imgUrl) ?>"/>
+        <?php
+        $via = OptionPage::getOption(OptionPage::OPTION_TWITTER_SCREENNAME);
+        if ($via) {
+            ?>
+            <meta property="twitter:site" content="@<?= esc_attr($via) ?>"/><?php
+        }
     }
 }
