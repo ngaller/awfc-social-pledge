@@ -126,10 +126,14 @@ class SharingMetaData
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
         ?>
-        <meta itemprop="headline" content="<?= esc_attr($this->description) ?>"/>
-        <meta itemprop="title" content="<?= esc_attr($this->description) ?>"/>
-        <meta itemprop="description" content="<?= esc_attr($this->description) ?>"/>
-        <meta itemprop="image" content="<?= $imgUrl ?>"/>
+        <!-- Open Graph -->
+        <meta property="og:type" content="article"/>
+        <meta property="og:url" content="<?= esc_attr($this->permalink) ?>"/>
+        <meta property="og:title" content="<?= esc_attr($this->title) ?>"/>
+        <meta property="og:site_name" content="<?php esc_attr(bloginfo('name')) ?>"/>
+        <meta property="og:image" content="<?= esc_attr($imgUrl) ?>"/>
+        <meta property="og:description" content="<?= esc_attr($this->description) ?>"/>
+        <meta property="og:headline" content="<?= esc_attr($this->title) ?>"/>
         <?php
     }
 
