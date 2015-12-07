@@ -113,6 +113,7 @@ class SharingMetaData
         <meta property="og:site_name" content="<?php bloginfo('name') ?>"/>
         <meta property="og:image" content="<?= $imgUrl ?>"/>
         <meta property="og:description" content="<?= $this->description ?>"/>
+        <meta property="og:headline" content="<?= $this->title ?>"/>
         <?php
     }
 
