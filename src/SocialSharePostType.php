@@ -125,9 +125,10 @@ class SocialSharePostType
     {
         $ua = $_SERVER['HTTP_USER_AGENT'];
         return stripos($ua, 'facebookexternalhit') !== false ||
-        stripos($ua, 'twitterbot') !== false ||
-        stripos($ua, 'linkedinbot') !== false ||
-        stripos($ua, 'Google (+https://developers.google.com/+/web/snippet/)' !== false);
+            stripos($ua, 'twitterbot') !== false ||
+            stripos($ua, 'linkedinbot') !== false ||
+            stripos($ua, 'Google (+https://developers.google.com/+/web/snippet/)') !== false;
+
         // not sure what to use for tumblr
     }
 
