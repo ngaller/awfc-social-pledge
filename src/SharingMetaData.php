@@ -70,6 +70,7 @@ class SharingMetaData
         $appId = OptionPage::getOption(OptionPage::OPTION_FACEBOOK_APPID);
         $imgUrl = wp_get_attachment_url($this->imageId);
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
+        "&redirect_uri=" . // TODO
         "&link=" . urlencode($this->permalink) .
         "&description=" . urlencode($this->description) .
         "&picture=" . urlencode($imgUrl) .
@@ -126,6 +127,7 @@ class SharingMetaData
         $imgUrl = wp_get_attachment_url($this->imageId);
         ?>
         <meta itemprop="headline" content="<?= esc_attr($this->description) ?>"/>
+        <meta itemprop="title" content="<?= esc_attr($this->description) ?>"/>
         <meta itemprop="description" content="<?= esc_attr($this->description) ?>"/>
         <meta itemprop="image" content="<?= $imgUrl ?>"/>
         <?php
