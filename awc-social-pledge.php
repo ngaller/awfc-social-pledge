@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: AWC Social Pledge
+ * Plugin Name: AWFC Social Pledge
  * Description: Define pledges, adds a Pledge button to Visual Composer, and enable sharing of those on social networks
  * Version: 1.0
  * Author: F1 Code

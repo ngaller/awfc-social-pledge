@@ -30,7 +30,7 @@ class Editor
     {
         $terms = $this->getPledgeCategories();
         vc_map([
-            'name' => __('AWC Social Pledge Button', 'awc-social-pledge'),
+            'name' => __('AWFC Social Pledge Button', 'awc-social-pledge'),
             'base' => 'awc_social_pledge_button',
             'icon' => plugins_url('assets/img/pledge_icon_editor.png', __DIR__),
             'category' => __('Content', 'js_composer'),
@@ -56,7 +56,7 @@ class Editor
     private function registerSocialPledgeSummary()
     {
         vc_map([
-            'name' => __('AWC Social Pledge Summary', 'awc-social-pledge'),
+            'name' => __('AWFC Social Pledge Summary', 'awc-social-pledge'),
             'base' => 'awc_social_pledge_summary',
             'icon' => plugins_url('assets/img/pledge_icon_editor.png', __DIR__),
             'category' => __('Content', 'js_composer')
