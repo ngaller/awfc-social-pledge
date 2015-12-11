@@ -14,10 +14,12 @@ class SharingMetaData
     public $imageId;
     /** @var string URL to the social-share post */
     public $permalink;
-    /** @var string title for the campaign */
+    /** @var string URL to redirect the users to */
+    public $homepageUrl;
+    /** @var string complete pledge text */
+    public $pledgeText;
+    /** @var string Lead text (this is used differently depending on the social network) */
     public $title;
-    /** @var string Description, i.e. the complete pledge text */
-    public $description;
     /** @var string Hashtags, comma separated list */
     public $hashtags;
     /** @var string social network identifier: gplus, facebook, tumblr, twitter */
@@ -53,8 +55,11 @@ class SharingMetaData
                 $this->generateGooglePlusTags();
                 break;
             case 'facebook':
+                $this->generateFacebookTags();
+                break;
             case 'tumblr':
-                $this->generateOpenGraphTags();
+                // don't think this is used right now.. so we'll just do the Facebook ones
+                $this->generateFacebookTags();
                 break;
             case 'twitter':
                 $this->generateTwitterCardTags();
@@ -73,7 +78,7 @@ class SharingMetaData
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
         "&redirect_uri=" . urlencode($return) .
         "&href=" . urlencode($this->permalink) .
-        "&description=" . urlencode($this->description) .
+        "&description=" . urlencode($this->pledgeText) .
         "&picture=" . urlencode($imgUrl) .
         "&caption=" . urlencode($this->title);
     }
@@ -86,10 +91,13 @@ class SharingMetaData
     private function getShareUrlForTumblr()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
+        $description = $this->pledgeText;
+        if ($this->title)
+            $description = $this->title . '  ' . $this->pledgeText;
         $url = 'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' . urlencode($this->permalink) .
             '&posttype=photo' .
             '&tags=' . urlencode($this->hashtags) .
-            '&caption=' . urlencode($this->description) .
+            '&caption=' . urlencode($description) .
             '&content=' . urlencode($imgUrl);
         return $url;
     }
@@ -98,7 +106,7 @@ class SharingMetaData
     {
         $via = OptionPage::getOption(OptionPage::OPTION_TWITTER_SCREENNAME);
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
-            '&text=' . urlencode($this->description) .
+            '&text=' . urlencode($this->pledgeText) .
             '&hashtags=' . urlencode($this->hashtags);
         if ($via) {
             $url .= '&via=' . urlencode($via);
@@ -106,7 +114,7 @@ class SharingMetaData
         return $url;
     }
 
-    private function generateOpenGraphTags()
+    private function generateFacebookTags()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
         //$img = image_downsize($this->imageId, 'thumbnail');
@@ -116,9 +124,9 @@ class SharingMetaData
         <meta property="og:type" content="article"/>
         <meta property="og:url" content="<?= esc_attr($this->permalink) ?>"/>
         <meta property="og:title" content="<?= esc_attr($this->title) ?>"/>
-        <meta property="og:site_name" content="<?php esc_attr(bloginfo('name')) ?>"/>
+        <!--        <meta property="og:site_name" content=""/> -->
         <meta property="og:image" content="<?= esc_attr($imgUrl) ?>"/>
-        <meta property="og:description" content="<?= esc_attr($this->description) ?>"/>
+        <meta property="og:description" content="<?= esc_attr($this->pledgeText) ?>"/>
         <meta property="og:headline" content="<?= esc_attr($this->title) ?>"/>
         <?php
     }
@@ -128,15 +136,16 @@ class SharingMetaData
         $imgUrl = wp_get_attachment_url($this->imageId);
         // this is opengraph, like for facebook, but we put the description as a title, because G+ does not post the
         // description apparently??
+        $description = $this->title . '  ' . $this->pledgeText;
         ?>
         <!-- Open Graph -->
         <meta property="og:type" content="article"/>
         <meta property="og:url" content="<?= esc_attr($this->permalink) ?>"/>
-        <meta property="og:title" content="<?= esc_attr($this->description) ?>"/>
-        <meta property="og:site_name" content="<?php esc_attr(bloginfo('name')) ?>"/>
+        <meta property="og:title" content="<?= esc_attr($description) ?>"/>
+        <!--        <meta property="og:site_name" content=""/> -->
         <meta property="og:image" content="<?= esc_attr($imgUrl) ?>"/>
-        <meta property="og:description" content="<?= esc_attr($this->description) ?>"/>
-        <meta property="og:headline" content="<?= esc_attr($this->description) ?>"/>
+        <!--        <meta property="og:description" content=""/> -->
+        <meta property="og:headline" content="<?= esc_attr($description) ?>"/>
         <title><?= esc_html($this->title) ?></title>
         <?php
     }
@@ -148,7 +157,7 @@ class SharingMetaData
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image"/>
         <meta property="twitter:title" content="<?= esc_attr($this->title) ?>"/>
-        <meta property="twitter:description" content="<?= esc_attr($this->description) ?>"/>
+        <meta property="twitter:description" content="<?= esc_attr($this->pledgeText) ?>"/>
         <meta property="twitter:image" content="<?= esc_attr($imgUrl) ?>"/>
         <?php
         $via = OptionPage::getOption(OptionPage::OPTION_TWITTER_SCREENNAME);
@@ -157,4 +166,27 @@ class SharingMetaData
             <meta property="twitter:site" content="@<?= esc_attr($via) ?>"/><?php
         }
     }
+
+    /**
+     * Uses the Social Campaign data to populate the metadata options.
+     * @param array $campaignData
+     */
+    public function applyCampaignData($campaignData)
+    {
+        if (isset($campaignData['Hashtags'])) {
+            $this->hashtags = $campaignData['Hashtags'];
+        }
+        if (isset($campaignData['Homepage'])) {
+            $this->homepageUrl = $campaignData['Homepage'];
+        }
+        if ($this->shareType == 'gplus') {
+            $key = 'Google+';
+        } else {
+            $key = ucfirst($this->shareType);
+        }
+        if (isset($campaignData[$key])) {
+            $this->title = $campaignData[$key];
+        }
+    }
+
 }

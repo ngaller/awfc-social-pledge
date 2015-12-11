@@ -22,7 +22,7 @@ class PledgePostType
             'post_type' => self::POST_TYPE,
             'include' => $selectedPledgeIds
         ]);
-        $content = array_map(function($p) {
+        $content = array_map(function ($p) {
             $content = $p->post_content;
             // remove links and their content
             $content = preg_replace('/<a.*<\/a>/', '', $content);
@@ -38,6 +38,7 @@ class PledgePostType
         $this->registerPostType();
         $this->registerTaxonomy();
         $this->registerCategoryTemplate();
+        $this->registerMetaBox();
     }
 
     private function registerPostType()
@@ -59,6 +60,71 @@ class PledgePostType
                 'description' => __(sprintf('%s', ucwords(str_replace("_", " ", self::POST_TYPE)))),
                 'supports' => ['title', 'editor']
             ]);
+    }
+
+    private function registerMetaBox()
+    {
+        add_action('add_meta_boxes_' . self::POST_TYPE, [$this, 'addMetaBoxes']);
+        add_action('save_post', [$this, 'saveMetaBoxes']);
+    }
+
+    /**
+     * Register meta box for the Short Content (used for tweets)
+     */
+    public function addMetaBoxes()
+    {
+        add_meta_box('pledge_short_content', 'Short Content', [$this, 'outputShortContentMetaBox'],
+            self::POST_TYPE, 'normal');
+    }
+
+    /**
+     * Check if metabox data was posted.
+     *
+     * @param $postId
+     */
+    public function saveMetaBoxes($postId)
+    {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+        if (isset($_POST['pledge_short_content_nonce']) &&
+            wp_verify_nonce($_POST['pledge_short_content_nonce'], self::POST_TYPE) &&
+            isset($_POST['pledge_short_content_value'])
+        ) {
+            $input = sanitize_text_field($_POST['pledge_short_content_value']);
+            update_post_meta($postId, 'pledge_short_content', $input);
+        }
+    }
+
+    /**
+     * HTML for the Short Content meta box
+     * @param \WP_Post $post
+     */
+    public function outputShortContentMetaBox($post)
+    {
+        $value = get_post_meta($post->ID, 'pledge_short_content', true);
+
+        wp_nonce_field(self::POST_TYPE, 'pledge_short_content_nonce');
+        ?>
+        <label for='pledge_short_content_value'>If specified, this text will be used for shorter posts (i.e. Twitter)</label>
+        <br/>
+        <script type="text/javascript">
+            function updateShortContentCharCount() {
+                var $ = jQuery;
+                var l = $('#pledge_short_content_value').val().length;
+                if(l) {
+                    $('#pledge_short_content_char_count').html('Character Count: ' + l);
+                } else {
+                    $('#pledge_short_content_char_count').html('');
+                }
+            }
+        </script>
+        <textarea name='pledge_short_content_value' id='pledge_short_content_value' style='width: 80%'
+                  onkeyup='updateShortContentCharCount()'><?= esc_html($value) ?></textarea>
+        <br/>
+        <label id="pledge_short_content_char_count"></label>
+
+<?php
     }
 
     // register a "Pledge Category" taxonomy that can be used to group the pledges

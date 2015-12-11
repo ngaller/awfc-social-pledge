@@ -61,4 +61,17 @@ class SocialCampaignTaxonomy
         }
         return null;
     }
+
+    public static function parseSocialCampaign($term)
+    {
+        $src = $term->description;
+        $result = [];
+        foreach (explode('\n', $src) as $line) {
+            $parts = explode('=', $line);
+            if (count($parts) == 2) {
+                $result[rtrim($parts[0])] = ltrim($parts[1]);
+            }
+        }
+        return $result;
+    }
 }

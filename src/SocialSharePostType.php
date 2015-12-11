@@ -37,9 +37,8 @@ class SocialSharePostType
         $shareData->shareType = $shareType;
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);
         if ($campaign) {
-            // strip hash just in case they included them
-            $shareData->hashtags = str_replace('#', '', $campaign->name);
-            $shareData->campaignId = $campaign->term_id;
+            $campaignData = SocialCampaignTaxonomy::parseSocialCampaign($campaign);
+            $shareData->applyCampaignData($campaignData);
         }
         $postId = wp_insert_post([
             'post_type' => self::POST_TYPE,
