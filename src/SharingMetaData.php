@@ -43,6 +43,8 @@ class SharingMetaData
                 return $this->getShareUrlForTumblr();
             case 'twitter':
                 return $this->getShareUrlForTwitter();
+            case 'count-only':
+                return '';
             default:
                 die('Invalid share type');
         }

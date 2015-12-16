@@ -184,7 +184,12 @@ jQuery(document).ready(function ($) {
                 var selectedIds = getPledgeIds(container);
                 var shareType = $(this).data('share-type');
                 var shareUrl = getSocialShareUrl(selectedIds, shareType, pledgeCategoryUrl);
-                openPopup(shareUrl);
+                if (shareType == 'count-only') {
+                    $.ajax(shareUrl);  // no need to wait for result
+                } else {
+                    openPopup(shareUrl);
+                }
+                container.find('.thankyou').show();
                 //window.open('', '_blank', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
                 //getSocialShareUrl(, pledgeCategoryUrl, function (shareUrl) {
                 //    $(this).removeClass('disabled');

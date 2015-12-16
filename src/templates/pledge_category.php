@@ -1,5 +1,4 @@
 <?php
-use AWC\SocialPledge\OptionPage;
 use AWC\SocialPledge\PledgeDialogData;
 
 /**
@@ -54,7 +53,18 @@ function show_pledge_thumbnail()
             text-indent: -15px;
             padding-left: 15px;
             display: block;
-            color: #6e7177;  /* match color on body */
+            color: #6e7177; /* match color on body */
+        }
+
+        .pledge_dialog .thankyou {
+            text-align: center;
+            padding-top: 10px;
+            display: none;
+        }
+
+        .pledge_dialog .thankyou label {
+            font-size: 120% !important;
+            font-weight: bold;
         }
 
         .pledge_dialog .pledge_select {
@@ -122,6 +132,7 @@ function show_pledge_thumbnail()
             border-radius: 4px;
             text-align: center;
             margin-top: 15px;
+            max-width: 100%;
         }
 
         .share_buttons .disabled {
@@ -164,6 +175,10 @@ function show_pledge_thumbnail()
 
         .buffer {
             background-color: #323b43;
+        }
+
+        .count-only {
+            /*background-color:*/
         }
 
         .pledge_selection_error {
@@ -210,9 +225,16 @@ function show_pledge_thumbnail()
             <i class="fa fa-facebook"></i> Facebook</a>
         <a class="btn share twitter" data-share-type="twitter" href="javascript:void(0)">
             <i class="fa fa-twitter"></i> Twitter</a>
-        <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i class="fa fa-google-plus"></i> Google+</a>
+        <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i class="fa fa-google-plus"></i>
+            Google+</a>
         <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
         <a class="btn share tumblr" data-share-type="tumblr" href="javascript:void(0)">
             <i class="fa fa-tumblr"></i> Tumblr</a>
+        <button class="btn share count-only" data-share-type="count-only">
+            Don't Share - Just Count my Pledge
+        </button>
+    </div>
+    <div class="thankyou">
+        <label>Thank you for your pledge!</label>
     </div>
 <?php

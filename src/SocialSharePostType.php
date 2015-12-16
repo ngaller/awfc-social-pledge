@@ -46,8 +46,10 @@ class SocialSharePostType
             'post_status' => 'publish'
         ]);
         $shareData->permalink = get_permalink($postId);
-//        update_post_meta($postId, 'selected_pledges', $selectedPledgeIds);
-//        update_post_meta($postId, 'share_type', )
+        // add these for reporting purposes.
+        // share type is already saved in the content but this way we don't have to unserialize it
+        update_post_meta($postId, 'client_ip', $_SERVER['REMOTE_ADDR']);
+        update_post_meta($postId, 'share_type', $shareType);
 
         return $shareData;
     }
@@ -110,12 +112,12 @@ class SocialSharePostType
 
         if ($post->post_type == self::POST_TYPE) {
             if ($this->isCrawler()) {
-                $this->trackCrawled();
+                self::trackCrawled();
                 return __DIR__ . '/templates/social_share.php';
             } else if (@$_GET['return'] == '1') {
                 return __DIR__ . '/templates/close_me.php';
             } else {
-                $this->trackOpen();
+                self::trackOpen();
                 $this->redirect();
             }
         }
@@ -136,7 +138,7 @@ class SocialSharePostType
     /**
      * Mark the current post as open.
      */
-    private function trackOpen()
+    private static function trackOpen()
     {
         $opens = get_post_meta(get_the_ID(), 'open_count', true);
         if (empty($opens)) {
@@ -150,7 +152,7 @@ class SocialSharePostType
     /**
      * Mark the current post as crawled.
      */
-    private function trackCrawled()
+    private static function trackCrawled()
     {
         $opens = get_post_meta(get_the_ID(), 'crawl_count', true);
         if (empty($opens)) {
