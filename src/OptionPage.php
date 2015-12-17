@@ -28,8 +28,30 @@ class OptionPage extends AdminPageHelper
         $this->addSetting(self::OPTION_TWITTER_CLIENTKEY, 'Twitter Client ID');
         $this->addSetting(self::OPTION_TWITTER_CLIENTSECRET, 'Twitter Client Secret');
         // TODO: provide oauth flow
-        $this->addSetting(self::OPTION_TWITTER_ACCESSTOKEN, 'Twitter Access Token');
-        $this->addSetting(self::OPTION_TWITTER_ACCESSTOKENSECRET, 'Twitter Access Token Secret');
+        $this->addSetting(self::OPTION_TWITTER_ACCESSTOKEN, 'Twitter Access Token', [$this, 'createTwitterOAuthBox']);
+        //$this->addSetting(self::OPTION_TWITTER_ACCESSTOKENSECRET, 'Twitter Access Token Secret');
+    }
+
+    public function createTwitterOAuthBox($args)
+    {
+        $optionName = $args['name'];
+        $option = $this->getOption($optionName);
+        $isValid = false;
+        if (isset($option)) {
+            $api = new TwitterLogin();
+            if ($api->validateToken()) {
+                $token = 'Twitter access token validated';
+                $isValid = true;
+            } else {
+                $token = 'Twitter access token invalid - please Login with Twitter to reset it';
+            }
+        } else {
+            $token = 'Twitter access token not set - please Login with Twitter';
+        }
+        echo '<p class="twitter-token-status">' . $token . '</p>';
+        if (!$isValid) {
+            echo "<button id='twitterLogin'>Login with Twitter</button>";
+        }
     }
 
     public function registerOptionPage()
@@ -46,10 +68,19 @@ class OptionPage extends AdminPageHelper
         return parent::onSanitizeOptions($options);
     }
 
+    protected function onEnqueueScripts()
+    {
+        wp_enqueue_script('awc-social-pledge-admin', plugins_url('assets/js/admin.js', AWC_SOCIAL_PLEDGE_PLUGIN_BASENAME));
+    }
+
     public static function getAWCOption($optionName)
     {
         $opts = new OptionPage();
         return $opts->getOption($optionName);
     }
 
+    public static function saveAWCOption($optionName, $value)
+    {
+        (new OptionPage())->saveOption($optionName, $value);
+    }
 }

@@ -6,7 +6,6 @@
  */
 
 namespace AWC\SocialPledge;
-use Abraham\TwitterOAuth\TwitterOAuth;
 
 /**
  * Responsible for obtaining a twitter URL (t.co) for a given picture.
@@ -15,21 +14,17 @@ use Abraham\TwitterOAuth\TwitterOAuth;
  */
 class TwitterMedia
 {
-    private $clientKey, $clientSecret, $accessToken, $accessTokenSecret;
-
-    function __construct()
-    {
-        $opts = new OptionPage();
-        $this->clientKey = $opts->getOption(OptionPage::OPTION_TWITTER_CLIENTKEY);
-        $this->clientSecret = $opts->getOption(OptionPage::OPTION_TWITTER_CLIENTSECRET);
-        $this->accessToken = $opts->getOption(OptionPage::OPTION_TWITTER_ACCESSTOKEN);
-        $this->accessTokenSecret = $opts->getOption(OptionPage::OPTION_TWITTER_ACCESSTOKENSECRET);
-    }
-
+    /**
+     * Retrieve the t.co URL for an image stored in WP.
+     * If necessary, this will post the image to Twitter and extract the URL from the resulting status.
+     *
+     * @param $imageId
+     * @return mixed|string
+     */
     public function getTwitterUrl($imageId)
     {
         $url = get_post_meta($imageId, 'twitter_url', true);
-        // XXX should we test it??
+        // wonder if we should test it to make sure it is still OK?
         if (!$url) {
             $url = $this->uploadPicture($imageId);
             update_post_meta($imageId, 'twitter_url', $url);
@@ -47,8 +42,7 @@ class TwitterMedia
     {
         $path = $this->getImagePath($imageId);
         $title = get_the_title($imageId);
-        $connection = new TwitterOAuth($this->clientKey, $this->clientSecret,
-            $this->accessToken, $this->accessTokenSecret);
+        $connection = (new TwitterLogin())->getTwitterConnection();
         $media = $connection->upload('media/upload', ['media' => $path]);
         if ($connection->getLastHttpCode() != 200) {
             error_log('Error uploading media to twitter: ' . $connection->getLastHttpCode());
@@ -89,9 +83,6 @@ class TwitterMedia
         if ($resized) {
             $path = str_replace(basename($path), $resized['file'], $path);
         }
-//        $uploadPath = get_option('upload_path');
-//        if (!$uploadPath)
-//            $uploadPath = WP_CONTENT_DIR . '/uploads';
         return $path;
     }
 }

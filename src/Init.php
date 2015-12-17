@@ -33,5 +33,6 @@ class Init
         (new ShortcodeDef())->registerShortCode();
         (new Editor())->integrateWithVC();
         (new OptionPage())->registerOptionPage();
+        (new TwitterLogin())->onWpLoaded();
     }
 }
