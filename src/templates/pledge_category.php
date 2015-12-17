@@ -132,7 +132,8 @@ function show_pledge_thumbnail()
             border-radius: 4px;
             text-align: center;
             margin-top: 15px;
-            max-width: 100%;
+            /* avoid spanning more than 2 columns */
+            max-width: 50%;
         }
 
         .share_buttons .disabled {
@@ -178,7 +179,7 @@ function show_pledge_thumbnail()
         }
 
         .count-only {
-            /*background-color:*/
+            background-color: #303030;
         }
 
         .pledge_selection_error {
@@ -189,6 +190,7 @@ function show_pledge_thumbnail()
         @media screen and (max-width: 500px) {
             .share_buttons .btn {
                 min-width: 45%;
+                max-width: 100%;
             }
         }
     </style>
