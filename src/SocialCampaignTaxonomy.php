@@ -62,11 +62,19 @@ class SocialCampaignTaxonomy
         return null;
     }
 
+    /**
+     * Given a term object (social campaign), this returns the associative array of key = value pairs defined
+     * within the term's description.
+     *
+     * @see SharingMetaData::applyCampaignData
+     * @param $term
+     * @return array
+     */
     public static function parseSocialCampaign($term)
     {
         $src = $term->description;
         $result = [];
-        foreach (explode('\n', $src) as $line) {
+        foreach (explode("\n", $src) as $line) {
             $parts = explode('=', $line);
             if (count($parts) == 2) {
                 $result[rtrim($parts[0])] = ltrim($parts[1]);

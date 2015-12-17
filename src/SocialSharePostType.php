@@ -36,7 +36,7 @@ class SocialSharePostType
     {
         $shareData = new SharingMetaData();
         $shareData->pledgeText = PledgePostType::getSelectedPledgeText($selectedPledgeIds);
-        $shareData->title = 'Site title?  Or somethign else?';
+        $shareData->title = get_bloginfo('name');
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);

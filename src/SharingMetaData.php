@@ -107,8 +107,12 @@ class SharingMetaData
     private function getShareUrlForTwitter()
     {
         $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
+        $twitterMedia = new TwitterMedia();
+        $pic = $twitterMedia->getTwitterUrl($this->imageId);
+        $statusText = $this->title . ' ' . $pic;
+
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
-            '&text=' . urlencode($this->pledgeText) .
+            '&text=' . urlencode($statusText) .
             '&hashtags=' . urlencode($this->hashtags);
         if ($via) {
             $url .= '&via=' . urlencode($via);

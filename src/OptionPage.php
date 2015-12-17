@@ -15,12 +15,21 @@ class OptionPage extends AdminPageHelper
     const AWC_SOCIALPLEDGE_SETTINGS = 'awc_social_pledge_settings';
     const OPTION_FACEBOOK_APPID = 'facebook_appid';
     const OPTION_TWITTER_SCREENNAME = 'twitter_screenname';
+    const OPTION_TWITTER_CLIENTKEY = 'twitter_clientkey';
+    const OPTION_TWITTER_CLIENTSECRET = 'twitter_clientsecret';
+    const OPTION_TWITTER_ACCESSTOKEN = 'twitter_accesstoken';
+    const OPTION_TWITTER_ACCESSTOKENSECRET = 'twitter_accesstokensecret';
 
     function __construct()
     {
         parent::__construct(self::AWC_SOCIALPLEDGE_SETTINGS, 'AWFC Social Pledge Settings');
         $this->addSetting(self::OPTION_FACEBOOK_APPID, 'Facebook App Id');
         $this->addSetting(self::OPTION_TWITTER_SCREENNAME, 'Twitter Screenname');
+        $this->addSetting(self::OPTION_TWITTER_CLIENTKEY, 'Twitter Client ID');
+        $this->addSetting(self::OPTION_TWITTER_CLIENTSECRET, 'Twitter Client Secret');
+        // TODO: provide oauth flow
+        $this->addSetting(self::OPTION_TWITTER_ACCESSTOKEN, 'Twitter Access Token');
+        $this->addSetting(self::OPTION_TWITTER_ACCESSTOKENSECRET, 'Twitter Access Token Secret');
     }
 
     public function registerOptionPage()
