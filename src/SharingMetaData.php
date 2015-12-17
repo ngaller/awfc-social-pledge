@@ -74,7 +74,7 @@ class SharingMetaData
     private function getShareUrlForFacebook()
     {
         //https://www.facebook.com/dialog/feed?app_id=145634995501895&display=popup&caption=An%20example%20caption&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https://developers.facebook.com/tools/explorer
-        $appId = OptionPage::getOption(OptionPage::OPTION_FACEBOOK_APPID);
+        $appId = OptionPage::getAWCOption(OptionPage::OPTION_FACEBOOK_APPID);
         $imgUrl = wp_get_attachment_url($this->imageId);
         $return = add_query_arg('return', '1', $this->permalink);
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
@@ -106,7 +106,7 @@ class SharingMetaData
 
     private function getShareUrlForTwitter()
     {
-        $via = OptionPage::getOption(OptionPage::OPTION_TWITTER_SCREENNAME);
+        $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
             '&text=' . urlencode($this->pledgeText) .
             '&hashtags=' . urlencode($this->hashtags);
@@ -162,7 +162,7 @@ class SharingMetaData
         <meta property="twitter:description" content="<?= esc_attr($this->pledgeText) ?>"/>
         <meta property="twitter:image" content="<?= esc_attr($imgUrl) ?>"/>
         <?php
-        $via = OptionPage::getOption(OptionPage::OPTION_TWITTER_SCREENNAME);
+        $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
         if ($via) {
             ?>
             <meta property="twitter:site" content="@<?= esc_attr($via) ?>"/><?php

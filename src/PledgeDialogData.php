@@ -83,8 +83,12 @@ class PledgeDialogData
             return false;
         $width = $this->getPledgeThumbnailWidth($screenWidth);
 
-        $image = image_downsize($this->imageId, [$width, $width]);
-        return $image;
+        // use the "large" image size.  Picking a pre-determined size will allow us to watermark those specific images,
+        // even though the selected size may be too large for the device
+        $image = image_downsize($this->imageId, 'large');
+        // scale the image via width / height
+        $size = image_constrain_size_for_editor($image[1], $image[2], [$width, $width]);
+        return [$image[0], $size[0], $size[1]];
     }
 
 

@@ -26,12 +26,16 @@ class SocialSharePostType
      * Create a "Social Share" post associated with the specified image, campaign, selected pledges.
      * Return the completed metadata.
      *
+     * @param $imgUrl
+     * @param $shareType
+     * @param $parentId
+     * @param $selectedPledgeIds
      * @return SharingMetaData
      */
     public static function createSocialShare($imgUrl, $shareType, $parentId, $selectedPledgeIds)
     {
         $shareData = new SharingMetaData();
-        $shareData->description = PledgePostType::getSelectedPledgeText($selectedPledgeIds);
+        $shareData->pledgeText = PledgePostType::getSelectedPledgeText($selectedPledgeIds);
         $shareData->title = 'Site title?  Or somethign else?';
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;

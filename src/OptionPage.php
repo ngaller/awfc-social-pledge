@@ -37,4 +37,10 @@ class OptionPage extends AdminPageHelper
         return parent::onSanitizeOptions($options);
     }
 
+    public static function getAWCOption($optionName)
+    {
+        $opts = new OptionPage();
+        return $opts->getOption($optionName);
+    }
+
 }

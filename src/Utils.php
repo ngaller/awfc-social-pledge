@@ -18,6 +18,7 @@ class Utils
      */
     public static function getAttachmentId($url)
     {
+        /** @var \WP_Query */
         global $wpdb;
 
         if (is_numeric($url)) {
