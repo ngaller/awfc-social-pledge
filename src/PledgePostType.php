@@ -36,7 +36,9 @@ class PledgePostType
                 }
             }
             // remove links and their content
-            $content = preg_replace('/<a.*<\/a>/', '', $content);
+            $content = preg_replace('/<a.*?<\/a>/', '', $content);
+            // remove shortcodes
+            $content = preg_replace('/\[.*?\]/', '', $content);
             // remove other tags
             $content = wp_strip_all_tags($content, true);
             return $content;
