@@ -133,7 +133,7 @@ function show_pledge_thumbnail()
             text-align: center;
             margin-top: 15px;
             /* avoid spanning more than 2 columns */
-            max-width: 50%;
+            max-width: calc(50% - 2px);
         }
 
         .share_buttons .disabled {
