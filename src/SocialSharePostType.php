@@ -172,8 +172,11 @@ class SocialSharePostType
      */
     private function redirect()
     {
-        // TODO: figure out what URL to use
-        wp_redirect(get_home_url());
+        $meta = $this->getSocialMetaData();
+        if ($meta->homepageUrl)
+            wp_redirect($meta->homepageUrl);
+        else
+            wp_redirect(home_url());
         exit;
     }
 
