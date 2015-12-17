@@ -110,6 +110,9 @@ class SharingMetaData
         $twitterMedia = new TwitterMedia();
         $pic = $twitterMedia->getTwitterUrl($this->imageId);
         $statusText = $this->pledgeText . ' ' . $pic;
+        if ($this->title) {
+            $statusText = $this->title . ' ' . $statusText;
+        }
 
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
             '&text=' . urlencode($statusText);
