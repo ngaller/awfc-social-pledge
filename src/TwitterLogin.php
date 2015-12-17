@@ -56,8 +56,10 @@ class TwitterLogin
     {
         if ($this->accessToken) {
             $connection = $this->getTwitterConnection();
-            $connection->get('account/verify_credentials');
-            return 200 == $connection->getLastHttpCode();
+            $creds = $connection->get('account/verify_credentials');
+            if($creds && 200 == $connection->getLastHttpCode()){
+                return $creds->screen_name;
+            }
         }
         return false;
     }

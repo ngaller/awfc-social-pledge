@@ -39,8 +39,8 @@ class OptionPage extends AdminPageHelper
         $isValid = false;
         if (isset($option)) {
             $api = new TwitterLogin();
-            if ($api->validateToken()) {
-                $token = 'Twitter access token validated';
+            if (($twitterName = $api->validateToken())) {
+                $token = "Twitter access token validated: $twitterName";
                 $isValid = true;
             } else {
                 $token = 'Twitter access token invalid - please Login with Twitter to reset it';
@@ -51,7 +51,11 @@ class OptionPage extends AdminPageHelper
         echo '<p class="twitter-token-status">' . $token . '</p>';
         if (!$isValid) {
             echo "<button id='twitterLogin'>Login with Twitter</button>";
+        } else {
+            echo "<button id='twitterLogin'>Reset Twitter Login</button>";
         }
+        echo '<div><i>Do not use an actively used Twitter account for this purpose.  It will be used for posting the ' .
+            'images so that they can be shared in the social pledges.</i></div>';
     }
 
     public function registerOptionPage()
