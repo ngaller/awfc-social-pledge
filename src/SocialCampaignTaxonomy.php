@@ -33,6 +33,7 @@ class SocialCampaignTaxonomy
             'public' => false,
             'rewrite' => false,
             'show_ui' => true,
+            'hierarchical' => true,  // so it shows with checkboxes
             'show_in_menu' => true,
             'show_tagcloud' => false,
             'show_in_quick_edit' => true,
