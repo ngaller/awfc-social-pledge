@@ -44,7 +44,15 @@ function show_pledge_thumbnail()
             text-align: left;
         }
 
-        .pledge_dialog label {
+        .pledge_dialog .dlg_close {
+            font-size: 23px;
+            text-align: right;
+            font-weight: bold;
+            margin-top: -20px;
+            cursor: pointer;
+        }
+
+        .pledge_category_list label {
             text-transform: none;
             font-weight: normal;
             font-size: 100% !important;
@@ -56,18 +64,20 @@ function show_pledge_thumbnail()
             color: #6e7177; /* match color on body */
         }
 
-        .pledge_dialog .thankyou {
+        .pledge_category_list .thankyou {
             text-align: center;
             padding-top: 10px;
             display: none;
+            /* avoid getting too wide on the desktop pledge summary */
+            max-width: 500px;
         }
 
-        .pledge_dialog .thankyou label {
+        .pledge_category_list .thankyou label {
             font-size: 120% !important;
             font-weight: bold;
         }
 
-        .pledge_dialog .pledge_select {
+        .pledge_category_list .pledge_select {
             width: 13px;
             height: 13px;
             padding: 0;
@@ -77,14 +87,6 @@ function show_pledge_thumbnail()
             /* vertically align checkboxes with labels.  If the font size and/or line height is changed this
                value may have to be changed */
             top: -1px;
-        }
-
-        .pledge_dialog .dlg_close {
-            font-size: 23px;
-            text-align: right;
-            font-weight: bold;
-            margin-top: -20px;
-            cursor: pointer;
         }
 
         .pledge_category_list {
@@ -194,6 +196,7 @@ function show_pledge_thumbnail()
             }
         }
     </style>
+
     <div class="pledge_category_list">
         <h5><?= $pledgeData->getInstructions(); ?></h5>
         <div class="thumbnail_container">
@@ -216,27 +219,30 @@ function show_pledge_thumbnail()
             <?php
         }
         ?>
+
+        <div class="pledge_selection_error">
+            Please select your pledge first
+        </div>
+        <div class="share_buttons">
+            <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
+            <input type="hidden" name="hashtags" value="<?= esc_attr($pledgeData->getHashtags()); ?>"/>
+            <a class="btn share facebook" data-share-type="facebook" href="javascript:void(0)">
+                <i class="fa fa-facebook"></i> Facebook</a>
+            <a class="btn share twitter" data-share-type="twitter" href="javascript:void(0)">
+                <i class="fa fa-twitter"></i> Twitter</a>
+            <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i
+                    class="fa fa-google-plus"></i>
+                Google+</a>
+            <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
+            <a class="btn share tumblr" data-share-type="tumblr" href="javascript:void(0)">
+                <i class="fa fa-tumblr"></i> Tumblr</a>
+            <button class="btn share count-only" data-share-type="count-only">
+                Don't Share - Just Count my Pledge
+            </button>
+        </div>
+        <div class="thankyou">
+            <label>Thank you for your pledge!</label>
+        </div>
     </div>
-    <div class="pledge_selection_error">
-        Please select your pledge first
-    </div>
-    <div class="share_buttons">
-        <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
-        <input type="hidden" name="hashtags" value="<?= esc_attr($pledgeData->getHashtags()); ?>"/>
-        <a class="btn share facebook" data-share-type="facebook" href="javascript:void(0)">
-            <i class="fa fa-facebook"></i> Facebook</a>
-        <a class="btn share twitter" data-share-type="twitter" href="javascript:void(0)">
-            <i class="fa fa-twitter"></i> Twitter</a>
-        <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i class="fa fa-google-plus"></i>
-            Google+</a>
-        <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
-        <a class="btn share tumblr" data-share-type="tumblr" href="javascript:void(0)">
-            <i class="fa fa-tumblr"></i> Tumblr</a>
-        <button class="btn share count-only" data-share-type="count-only">
-            Don't Share - Just Count my Pledge
-        </button>
-    </div>
-    <div class="thankyou">
-        <label>Thank you for your pledge!</label>
-    </div>
+
 <?php

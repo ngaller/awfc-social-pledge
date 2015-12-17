@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
     ////////////////// Summary UI
 
     function loadPledgeSummary(container, categories) {
-        var url = pledgeButtons[0].href.replace(/(pledge_category=).*&?/, '$1' + encodeURIComponent(categories));
+        var url = pledgeButtons[0].href.replace(/(pledge_category=)[^&]*/, '$1' + encodeURIComponent(categories));
         var img = $('.image-fullwidth img').attr('src');
         url += '&img=' + encodeURIComponent(img) + '&show_image=0';
         $.get(url, null, function (result) {
