@@ -10,20 +10,31 @@ namespace AWC\SocialPledge;
 
 class PledgePostType
 {
-    const POST_TYPE = "pledge";
-    const TAXONOMY = "pledge_category";
+    const POST_TYPE = 'pledge';
+    const TAXONOMY = 'pledge_category';
+    const METAKEY_PLEDGE_SHORT_CONTENT = 'pledge_short_content';
 
-    public static function getSelectedPledgeText($selectedPledgeIds)
+    public static function getSelectedPledgeText($selectedPledgeIds, $useShortContent)
     {
         if (!is_array($selectedPledgeIds)) {
             $selectedPledgeIds = explode(',', $selectedPledgeIds);
+        }
+        // when using short content, limit to 1 pledge
+        if ($useShortContent) {
+            $selectedPledgeIds = [$selectedPledgeIds[0]];
         }
         $posts = get_posts([
             'post_type' => self::POST_TYPE,
             'include' => $selectedPledgeIds
         ]);
-        $content = array_map(function ($p) {
+        $content = array_map(function ($p) use ($useShortContent) {
             $content = $p->post_content;
+            if ($useShortContent) {
+                $short = get_post_meta($p->ID, self::METAKEY_PLEDGE_SHORT_CONTENT, true);
+                if (!empty($short)) {
+                    $content = $short;
+                }
+            }
             // remove links and their content
             $content = preg_replace('/<a.*<\/a>/', '', $content);
             // remove other tags
@@ -73,7 +84,7 @@ class PledgePostType
      */
     public function addMetaBoxes()
     {
-        add_meta_box('pledge_short_content', 'Short Content', [$this, 'outputShortContentMetaBox'],
+        add_meta_box(self::METAKEY_PLEDGE_SHORT_CONTENT, 'Short Content', [$this, 'outputShortContentMetaBox'],
             self::POST_TYPE, 'normal');
     }
 
@@ -92,7 +103,7 @@ class PledgePostType
             isset($_POST['pledge_short_content_value'])
         ) {
             $input = sanitize_text_field($_POST['pledge_short_content_value']);
-            update_post_meta($postId, 'pledge_short_content', $input);
+            update_post_meta($postId, self::METAKEY_PLEDGE_SHORT_CONTENT, $input);
         }
     }
 
@@ -102,17 +113,18 @@ class PledgePostType
      */
     public function outputShortContentMetaBox($post)
     {
-        $value = get_post_meta($post->ID, 'pledge_short_content', true);
+        $value = get_post_meta($post->ID, self::METAKEY_PLEDGE_SHORT_CONTENT, true);
 
         wp_nonce_field(self::POST_TYPE, 'pledge_short_content_nonce');
         ?>
-        <label for='pledge_short_content_value'>If specified, this text will be used for shorter posts (i.e. Twitter)</label>
+        <label for='pledge_short_content_value'>If specified, this text will be used for shorter posts (i.e.
+            Twitter)</label>
         <br/>
         <script type="text/javascript">
             function updateShortContentCharCount() {
                 var $ = jQuery;
                 var l = $('#pledge_short_content_value').val().length;
-                if(l) {
+                if (l) {
                     $('#pledge_short_content_char_count').html('Character Count: ' + l);
                 } else {
                     $('#pledge_short_content_char_count').html('');
@@ -124,7 +136,7 @@ class PledgePostType
         <br/>
         <label id="pledge_short_content_char_count"></label>
 
-<?php
+        <?php
     }
 
     // register a "Pledge Category" taxonomy that can be used to group the pledges

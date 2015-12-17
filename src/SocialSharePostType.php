@@ -35,7 +35,7 @@ class SocialSharePostType
     public static function createSocialShare($imgUrl, $shareType, $parentId, $selectedPledgeIds)
     {
         $shareData = new SharingMetaData();
-        $shareData->pledgeText = PledgePostType::getSelectedPledgeText($selectedPledgeIds);
+        $shareData->pledgeText = PledgePostType::getSelectedPledgeText($selectedPledgeIds, $shareType == 'twitter');
         $shareData->title = get_bloginfo('name');
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;

@@ -16,7 +16,7 @@ class SharingMetaData
     public $permalink;
     /** @var string URL to redirect the users to */
     public $homepageUrl;
-    /** @var string complete pledge text */
+    /** @var string complete pledge text (for Twitter, it will be the shorter version) */
     public $pledgeText;
     /** @var string Lead text (this is used differently depending on the social network) */
     public $title;
@@ -109,11 +109,13 @@ class SharingMetaData
         $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
         $twitterMedia = new TwitterMedia();
         $pic = $twitterMedia->getTwitterUrl($this->imageId);
-        $statusText = $this->title . ' ' . $pic;
+        $statusText = $this->pledgeText . ' ' . $pic;
 
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
-            '&text=' . urlencode($statusText) .
-            '&hashtags=' . urlencode($this->hashtags);
+            '&text=' . urlencode($statusText);
+        if ($this->hashtags && strpos($statusText, '#') === false) {
+            $url .= '&hashtags=' . urlencode($this->hashtags);
+        }
         if ($via) {
             $url .= '&via=' . urlencode($via);
         }
@@ -156,6 +158,7 @@ class SharingMetaData
         <?php
     }
 
+    // we don't actually use the Twitter card right now, but just in case...
     private function generateTwitterCardTags()
     {
         $imgUrl = wp_get_attachment_url($this->imageId);
