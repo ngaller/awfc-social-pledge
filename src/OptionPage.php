@@ -27,7 +27,6 @@ class OptionPage extends AdminPageHelper
         $this->addSetting(self::OPTION_TWITTER_SCREENNAME, 'Twitter Screenname');
         $this->addSetting(self::OPTION_TWITTER_CLIENTKEY, 'Twitter Client ID');
         $this->addSetting(self::OPTION_TWITTER_CLIENTSECRET, 'Twitter Client Secret');
-        // TODO: provide oauth flow
         $this->addSetting(self::OPTION_TWITTER_ACCESSTOKEN, 'Twitter Access Token', [$this, 'createTwitterOAuthBox']);
         //$this->addSetting(self::OPTION_TWITTER_ACCESSTOKENSECRET, 'Twitter Access Token Secret');
     }
@@ -75,6 +74,24 @@ class OptionPage extends AdminPageHelper
     protected function onEnqueueScripts()
     {
         wp_enqueue_script('awc-social-pledge-admin', plugins_url('assets/js/admin.js', AWC_SOCIAL_PLEDGE_PLUGIN_BASENAME));
+    }
+
+    protected function onOutputSettingsPage()
+    {
+        echo '<table class="form-table"><tr>';
+        echo '<th scope="row">Download campaign report</th>';
+        echo '<td>';
+        wp_dropdown_categories([
+            'taxonomy' => SocialCampaignTaxonomy::TAXONOMY,
+            'hierarchical' => 0,
+            'name' => 'report_campaign',
+            'value_field' => 'slug',
+            'orderby' => 'name',
+            'show_option_none' => 'Select a Campaign',
+            'option_none_value' => '',
+            'hide_empty' => false,
+        ]);
+        echo '</td></tr></table>';
     }
 
     public static function getAWCOption($optionName)

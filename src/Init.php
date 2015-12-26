@@ -34,5 +34,6 @@ class Init
         (new Editor())->integrateWithVC();
         (new OptionPage())->registerOptionPage();
         (new TwitterLogin())->onWpLoaded();
+        (new CampaignReport())->onWpLoaded();
     }
 }

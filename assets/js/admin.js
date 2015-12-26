@@ -21,6 +21,13 @@ jQuery(document).ready(function ($) {
         return false;
     });
 
+    $('#report_campaign').change(function() {
+        if(this.value) {
+            window.open(ajaxurl + '?action=awfc-social-campaign-report&campaign=' + encodeURIComponent(this.value),
+                '_blank');
+        }
+    });
+
     window.onTwitterLoginSuccess = function (token) {
         $('.twitter-token-status').html('Login Validated');
     };

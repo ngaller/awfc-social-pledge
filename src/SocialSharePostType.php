@@ -40,15 +40,17 @@ class SocialSharePostType
         $shareData->imageId = Utils::getAttachmentId($imgUrl);
         $shareData->shareType = $shareType;
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);
-        if ($campaign) {
-            $campaignData = SocialCampaignTaxonomy::parseSocialCampaign($campaign);
-            $shareData->applyCampaignData($campaignData);
-        }
-        $postId = wp_insert_post([
+        $postParams = [
             'post_type' => self::POST_TYPE,
             'post_content' => urlencode(serialize($shareData)),
             'post_status' => 'publish'
-        ]);
+        ];
+        if ($campaign) {
+            $campaignData = SocialCampaignTaxonomy::parseSocialCampaign($campaign);
+            $shareData->applyCampaignData($campaignData);
+            $postParams['post_title'] = $campaign->slug;
+        }
+        $postId = wp_insert_post($postParams);
         $shareData->permalink = get_permalink($postId);
         // add these for reporting purposes.
         // share type is already saved in the content but this way we don't have to unserialize it

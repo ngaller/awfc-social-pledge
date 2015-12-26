@@ -48,7 +48,7 @@ class SocialCampaignTaxonomy
      * Retrieve social campaign tag for the specified post (or null, if there isn't one)
      *
      * @param int $postId
-     * @return mixed|null
+     * @return \WP_Term
      */
     public static function getSocialCampaign($postId)
     {
