@@ -47,6 +47,8 @@ class OptionPage extends AdminPageHelper
         } else {
             $token = 'Twitter access token not set - please Login with Twitter';
         }
+//        echo "<input type='hidden' id='$optionName' value='".esc_attr($option)."'
+//            name='" . esc_attr(self::AWC_SOCIALPLEDGE_SETTINGS) . "[$optionName]'/>";
         echo '<p class="twitter-token-status">' . $token . '</p>';
         if (!$isValid) {
             echo "<button id='twitterLogin'>Login with Twitter</button>";
@@ -67,6 +69,14 @@ class OptionPage extends AdminPageHelper
         if (isset($options[self::OPTION_TWITTER_SCREENNAME])) {
             // remove @ from twitter name if they included it
             $options[self::OPTION_TWITTER_SCREENNAME] = str_replace('@', '', $options[self::OPTION_TWITTER_SCREENNAME]);
+        }
+        if (!isset($options[self::OPTION_TWITTER_ACCESSTOKEN])) {
+            // reload this one from the database because it's not explicitly output with the page
+            $options[self::OPTION_TWITTER_ACCESSTOKEN] = $this->getOption(self::OPTION_TWITTER_ACCESSTOKEN);
+        }
+        if (!isset($options[self::OPTION_TWITTER_ACCESSTOKENSECRET])) {
+            // reload this one from the database because it's not explicitly output with the page
+            $options[self::OPTION_TWITTER_ACCESSTOKENSECRET] = $this->getOption(self::OPTION_TWITTER_ACCESSTOKENSECRET);
         }
         return parent::onSanitizeOptions($options);
     }

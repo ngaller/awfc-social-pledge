@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    window.onTwitterLoginSuccess = function (token) {
+    window.onTwitterLoginSuccess = function () {
         $('.twitter-token-status').html('Login Validated');
     };
 
