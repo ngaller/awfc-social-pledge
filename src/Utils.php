@@ -27,6 +27,8 @@ class Utils
 
         // remove the part before /uploads, because it will have the CDN instead of the real attachment url
         $url = preg_replace('/^.*(\/uploads\/)/', '$1', $url);
+        // and the part after a question mark
+        $url = preg_replace('/\?.*/', '', $url);
         /** @noinspection SqlDialectInspection */
         $rs = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid like '%s';", '%' . $url));
         return $rs[0];

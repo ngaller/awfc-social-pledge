@@ -3,8 +3,6 @@ jQuery(document).ready(function ($) {
 
     // find image right before the given element
     function findRelatedImage(source) {
-        if (!source.length)
-            return '';
         var lastImage;
         // perform a DFS for source, return the last encountered image
         var dfs = function (element) {
@@ -89,7 +87,7 @@ jQuery(document).ready(function ($) {
 
     var pledgeButtons = $('.social-pledge-button');
     pledgeButtons.click(function () {
-        var img = findRelatedImage($(this));
+        var img = findRelatedImage(this);
         if (!img) {
             console.warn('Error: unable to find image');
             return false;
