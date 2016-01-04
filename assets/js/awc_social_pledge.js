@@ -5,11 +5,25 @@ jQuery(document).ready(function ($) {
     function findRelatedImage(source) {
         if (!source.length)
             return '';
-        var match = source.prev().find('.grve-image.image-fullwidth img');
-        if (match.length) {
-            return match.attr('src');
-        }
-        return findRelatedImage(source.parent());
+        var lastImage;
+        // perform a DFS for source, return the last encountered image
+        var dfs = function (element) {
+            if (element.className && element.className.indexOf('grve-image') != -1) {
+                lastImage = $(element).find('img').attr('src');
+            } else {
+                if (element === source) {
+                    return lastImage;
+                }
+                var children = element.childNodes;
+                for (var i = 0; i < children.length; i++) {
+                    var result = dfs(children[i]);
+                    if (result)
+                        return result;
+                }
+            }
+            return false;
+        };
+        return dfs(document.body);
     }
 
     function centerDialog(content) {
