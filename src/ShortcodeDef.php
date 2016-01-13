@@ -9,6 +9,8 @@ namespace AWC\SocialPledge;
  */
 class ShortcodeDef
 {
+    private $cachedCampaignData = null;
+
     public function registerShortCode()
     {
         add_shortcode('awc_social_pledge_button', [$this, 'renderButton']);
@@ -19,7 +21,7 @@ class ShortcodeDef
 
     public function renderButton($atts)
     {
-        $atts = shortcode_atts(['category' => '', 'category2' => ''], $atts);
+        $atts = shortcode_atts(['category' => '', 'category2' => '', 'image_override' => ''], $atts);
 
         //$link = '/?' . CustomPostType::TAXONOMY . '=' . urlencode($category);
         $link = get_term_link($atts['category'], PledgePostType::TAXONOMY);
@@ -39,16 +41,52 @@ class ShortcodeDef
         $link .= 'parent_id=' . get_the_ID();
 
         $esc_category = esc_attr($atts['category'] . ',' . $atts['category2']);
-        $html = "<a class='social-pledge-button' href='$link' " .
-            "data-pledge-categories='$esc_category'>Pledge</a>";
+
+        // get image override, if specified
+        $img_override = '';
+        if (!empty($atts['image_override'])) {
+            $img_override = " data-image-override='" . esc_attr($atts['image_override']) . "'";
+        }
+
+        // get pledge button image specified at campaign level
+        $style = '';
+        $campaignName = '';
+        $campaign = $this->getCampaignData(get_the_ID());
+        if ($campaign) {
+            $campaignName = $campaign['name'];
+            if (!empty($campaign['pledge-button'])) {
+                $style = 'style="background-image: url(\'' . esc_attr($campaign['pledge-button']) . '\')"';
+            }
+        }
+
+        $html = "<a class='social-pledge-button $campaignName' href='$link' " .
+            "data-pledge-categories='$esc_category' $img_override $style>Pledge</a>";
+
         wp_enqueue_script('awc-social-pledge-button');
         return $html;
     }
 
-    public function renderSummary(/** @noinspection PhpUnusedParameterInspection */
-        $atts)
+    public function renderSummary($atts)
     {
+        $atts = shortcode_atts(['image_override' => ''], $atts);
         wp_enqueue_script('awc-social-pledge-button');
-        return '<div class="social-pledge-summary"></div>';
+        $image_override = '';
+        if (!empty($atts['image_override'])) {
+            $image_override = ' data-image-override="' . esc_attr($atts['image_override']) . '"';
+        }
+        return '<div class="social-pledge-summary"' . $image_override . '></div>';
+    }
+
+    private function getCampaignData($postId)
+    {
+        if ($this->cachedCampaignData !== null)
+            return $this->cachedCampaignData;
+        $campaign = SocialCampaignTaxonomy::getSocialCampaign($postId);
+        if ($campaign) {
+            $this->cachedCampaignData = SocialCampaignTaxonomy::parseSocialCampaign($campaign);
+        } else {
+            $this->cachedCampaignData = false;
+        }
+        return $this->cachedCampaignData;
     }
 }

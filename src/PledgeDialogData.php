@@ -52,8 +52,8 @@ class PledgeDialogData
     {
         if ($this->socialCampaign) {
             $data = SocialCampaignTaxonomy::parseSocialCampaign($this->socialCampaign);
-            if(isset($data['Instructions']))
-                return $data['Instructions'];
+            if(isset($data['instructions']))
+                return $data['instructions'];
         }
         return '';
     }
@@ -100,7 +100,7 @@ class PledgeDialogData
      * @param int $screenWidth
      * @return int
      */
-    private function getPledgeThumbnailWidth($screenWidth)
+    public function getPledgeThumbnailWidth($screenWidth)
     {
         if (!$screenWidth) {
             $screenWidth = 768;

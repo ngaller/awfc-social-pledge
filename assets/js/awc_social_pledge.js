@@ -3,6 +3,10 @@ jQuery(document).ready(function ($) {
 
     // find image right before the given element
     function findRelatedImage(source) {
+        if($(source).data('image-override'))
+            // allow specifying the image override on the button
+            return $(source).data('image-override');
+
         var lastImage;
         // perform a DFS for source, return the last encountered image
         var dfs = function (element) {
@@ -47,11 +51,12 @@ jQuery(document).ready(function ($) {
         closeLightbox();
 
         // create overlay.  style is defined here to avoid making an extra request for the CSS
+        // z-index is set to place on top of the site's banner (z-index = 900)
         var style = ['position: absolute',
             'top: 0', 'left: 0', 'width: 100%', 'height: ' + bodyHeight + 'px',
             'background: rgba(0,0,0,.7)',
             'text-align: center',
-            'z-index: 10'].join(';');
+            'z-index: 901'].join(';');
 
         var overlay = $('<div class="pledge_dialog_overlay" style="' + style + '"></div>')
             .appendTo(document.body)
@@ -76,9 +81,9 @@ jQuery(document).ready(function ($) {
             content.html(result);
             $('<div class="dlg_close">&times;</div>').prependTo(content)
                 .click(closeLightbox);
-            var img = content.find('.pledge_category_image');
-            if (img.length) {
-                content.width(img.width());
+            var imgContainer = content.find('.pledge_category_list');
+            if (imgContainer.length) {
+                content.width(imgContainer.width());
             }
             onDialogReadyCb(content);
             centerDialog(content);
@@ -107,7 +112,10 @@ jQuery(document).ready(function ($) {
 
     function loadPledgeSummary(container, categories) {
         var url = pledgeButtons[0].href.replace(/(pledge_category=)[^&]*/, '$1' + encodeURIComponent(categories));
-        var img = $('.image-fullwidth img').attr('src');
+        var img = container.data('image-override');
+        if(!img){
+            img = $('.image-fullwidth img').attr('src');
+        }
         url += '&img=' + encodeURIComponent(img) + '&show_image=0';
         $.get(url, null, function (result) {
             // set the dialog's content and resize it to contain the image

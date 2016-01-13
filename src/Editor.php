@@ -48,6 +48,12 @@ class Editor
                     'param_name' => 'category2',
                     'description' => 'Optionally, define another category to be included.  They will be combined on the page.',
                     'value' => $terms
+                ],
+                [
+                    'type' => 'textfield',
+                    'heading' => 'Image Override',
+                    'param_name' => 'image_override',
+                    'description' => 'Define image to be used in the share dialog.  If not specified, the image immediately before the button will be used.  The image must be on this site.'
                 ]
             ]
         ]);
@@ -59,7 +65,15 @@ class Editor
             'name' => __('AWFC Social Pledge Summary', 'awc-social-pledge'),
             'base' => 'awc_social_pledge_summary',
             'icon' => plugins_url('assets/img/pledge_icon_editor.png', __DIR__),
-            'category' => __('Content', 'js_composer')
+            'category' => __('Content', 'js_composer'),
+            'params' => [
+                [
+                    'type' => 'textfield',
+                    'heading' => 'Image Override',
+                    'param_name' => 'image_override',
+                    'description' => 'Define image to be used in the share dialog.  If not specified, the image immediately before the button will be used.'
+                ]
+            ]
         ]);
     }
 

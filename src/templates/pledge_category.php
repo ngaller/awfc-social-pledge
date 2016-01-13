@@ -15,6 +15,7 @@ use AWC\SocialPledge\PledgeDialogData;
  */
 
 $pledgeData = new PledgeDialogData(@$_GET['img'], @$_GET['parent_id']);
+$screenWidth = isset($_GET['screen_width']) ? $_GET['screen_width'] : 0;
 
 
 function show_pledge_thumbnail()
@@ -24,8 +25,8 @@ function show_pledge_thumbnail()
         return;
     }
     global $pledgeData;
+    global $screenWidth;
 
-    $screenWidth = isset($_GET['screen_width']) ? $_GET['screen_width'] : 0;
     $image = $pledgeData->getPledgeThumbnail($screenWidth);
     if ($image) {
         echo "<img class='pledge_category_image' alt='Associated image to be posted'
@@ -52,16 +53,26 @@ function show_pledge_thumbnail()
             cursor: pointer;
         }
 
+        .social-pledge-summary .pledge_dialog_instructions {
+            /* hide instructions for summary */
+            display: none;
+        }
+
         .pledge_category_list label {
             text-transform: none;
             font-weight: normal;
-            font-size: 100% !important;
+            /* set font-size to counter-act "10px" setting marked important in theme */
+            font-size: inherit !important;
             line-height: 1.5;
             /* ensure wrapping labels will not indent underneath their checkbox */
             text-indent: -15px;
             padding-left: 15px;
             display: block;
-            color: #6e7177; /* match color on body */
+        }
+
+        .pledge_category_list label, .pledge_category_list .pledge_dialog_instructions {
+            /* match color on body (this is not inherited because we don't have grve-main-content as parent) */
+            color: #6e7177;
         }
 
         .pledge_category_list .thankyou {
@@ -78,15 +89,15 @@ function show_pledge_thumbnail()
         }
 
         .pledge_category_list .pledge_select {
-            width: 13px;
-            height: 13px;
+            width: 16px;
+            height: 16px;
             padding: 0;
             margin: 0;
             vertical-align: bottom;
             position: relative;
             /* vertically align checkboxes with labels.  If the font size and/or line height is changed this
                value may have to be changed */
-            top: -1px;
+            top: -3px;
         }
 
         .pledge_category_list {
@@ -116,6 +127,7 @@ function show_pledge_thumbnail()
         }
 
         .share_buttons {
+            /* flex containers lets us easily center the buttons */
             display: flex;
             flex-flow: row wrap;
             justify-content: space-between;
@@ -125,17 +137,18 @@ function show_pledge_thumbnail()
 
         .share_buttons .btn {
             flex: 0 0 auto;
-            display: block;
             padding: 10px 15px;
             border: none;
             text-decoration: none;
-            font-size: 18px;
             color: #FFF;
             border-radius: 4px;
             text-align: center;
             margin-top: 15px;
             /* avoid spanning more than 2 columns */
             max-width: calc(50% - 2px);
+            /* make all buttons the same color */
+            background-color: #303030;
+            height: 42px;
         }
 
         .share_buttons .disabled {
@@ -146,42 +159,6 @@ function show_pledge_thumbnail()
 
         .share_buttons .btn:hover {
             color: #efefef;
-        }
-
-        .facebook {
-            background-color: #3b5998;
-        }
-
-        .gplus {
-            background-color: #dd4b39;
-        }
-
-        .twitter {
-            background-color: #55acee;
-        }
-
-        .tumblr {
-            background-color: #35465c;
-        }
-
-        .stumbleupon {
-            background-color: #eb4924;
-        }
-
-        .pinterest {
-            background-color: #cc2127;
-        }
-
-        .linkedin {
-            background-color: #0077b5;
-        }
-
-        .buffer {
-            background-color: #323b43;
-        }
-
-        .count-only {
-            background-color: #303030;
         }
 
         .pledge_selection_error {
@@ -195,10 +172,18 @@ function show_pledge_thumbnail()
                 max-width: 100%;
             }
         }
+
+        @media screen and (min-width: 1025px) {
+            .social-pledge-summary .share_buttons {
+                display: block;
+                max-width: 100%;
+            }
+        }
     </style>
 
-    <div class="pledge_category_list">
-        <h5><?= $pledgeData->getInstructions(); ?></h5>
+    <div class="pledge_category_list"
+         style="min-width: <?= $screenWidth ? $pledgeData->getPledgeThumbnailWidth($screenWidth) : 0 ?>px;">
+        <p class="grve-subtitle pledge_dialog_instructions"><?= $pledgeData->getInstructions(); ?></p>
         <div class="thumbnail_container">
             <?php show_pledge_thumbnail(); ?>
         </div>
@@ -208,7 +193,7 @@ function show_pledge_thumbnail()
         while (have_posts()) {
             the_post(); ?>
             <div class="pledge_category">
-                <label class="pledge_content">
+                <label class="pledge_content grve-subtitle">
                     <input title="<?php the_title(); ?>" type="checkbox"
                            value="<?php the_ID(); ?>"
                            class="pledge_select">
@@ -226,16 +211,18 @@ function show_pledge_thumbnail()
         <div class="share_buttons">
             <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
             <input type="hidden" name="hashtags" value="<?= esc_attr($pledgeData->getHashtags()); ?>"/>
-            <a class="btn share facebook" data-share-type="facebook" href="javascript:void(0)">
-                <i class="fa fa-facebook"></i> Facebook</a>
-            <a class="btn share twitter" data-share-type="twitter" href="javascript:void(0)">
-                <i class="fa fa-twitter"></i> Twitter</a>
-            <a class="btn share gplus" data-share-type="gplus" href="javascript:void(0)"><i
-                    class="fa fa-google-plus"></i>
-                Google+</a>
-            <!--        <a class="btn share linkedin" href="#"><i class="fa fa-linkedin"></i> Share</a>-->
-            <a class="btn share tumblr" data-share-type="tumblr" href="javascript:void(0)">
-                <i class="fa fa-tumblr"></i> Tumblr</a>
+            <button class="btn share facebook" data-share-type="facebook">
+                <i class="fa fa-facebook"></i> Facebook
+            </button>
+            <button class="btn share twitter" data-share-type="twitter">
+                <i class="fa fa-twitter"></i> Twitter
+            </button>
+            <button class="btn share gplus" data-share-type="gplus">
+                <i class="fa fa-google-plus"></i> Google+
+            </button>
+            <button class="btn share tumblr" data-share-type="tumblr">
+                <i class="fa fa-tumblr"></i> Tumblr
+            </button>
             <button class="btn share count-only" data-share-type="count-only">
                 Don't Share - Just Count my Pledge
             </button>

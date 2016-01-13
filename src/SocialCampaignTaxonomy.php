@@ -68,17 +68,17 @@ class SocialCampaignTaxonomy
      * within the term's description.
      *
      * @see SharingMetaData::applyCampaignData
-     * @param $term
+     * @param \WP_Term $term
      * @return array
      */
     public static function parseSocialCampaign($term)
     {
         $src = $term->description;
-        $result = [];
+        $result = ['name' => $term->name];
         foreach (explode("\n", $src) as $line) {
             $parts = explode('=', $line);
             if (count($parts) == 2) {
-                $result[rtrim($parts[0])] = ltrim($parts[1]);
+                $result[strtolower(rtrim($parts[0]))] = ltrim($parts[1]);
             }
         }
         return $result;

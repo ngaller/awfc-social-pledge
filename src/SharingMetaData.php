@@ -185,16 +185,16 @@ class SharingMetaData
      */
     public function applyCampaignData($campaignData)
     {
-        if (isset($campaignData['Hashtags'])) {
-            $this->hashtags = $campaignData['Hashtags'];
+        if (isset($campaignData['hashtags'])) {
+            $this->hashtags = $campaignData['hashtags'];
         }
-        if (isset($campaignData['Homepage'])) {
-            $this->homepageUrl = $campaignData['Homepage'];
+        if (isset($campaignData['homepage'])) {
+            $this->homepageUrl = $campaignData['homepage'];
         }
         if ($this->shareType == 'gplus') {
-            $key = 'Google+';
+            $key = 'google+';
         } else {
-            $key = ucfirst($this->shareType);
+            $key = strtolower($this->shareType);
         }
         if (isset($campaignData[$key])) {
             $this->title = $campaignData[$key];
