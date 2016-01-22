@@ -42,7 +42,6 @@ class SocialSharePostType
         $campaign = SocialCampaignTaxonomy::getSocialCampaign($parentId);
         $postParams = [
             'post_type' => self::POST_TYPE,
-            'post_content' => urlencode(serialize($shareData)),
             'post_status' => 'publish'
         ];
         if ($campaign) {
@@ -50,6 +49,7 @@ class SocialSharePostType
             $shareData->applyCampaignData($campaignData);
             $postParams['post_title'] = $campaign->slug;
         }
+        $postParams['post_content'] = urlencode(serialize($shareData));
         $postId = wp_insert_post($postParams);
         $shareData->permalink = get_permalink($postId);
         // add these for reporting purposes.

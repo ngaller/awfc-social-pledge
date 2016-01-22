@@ -95,7 +95,7 @@ class SharingMetaData
         $imgUrl = wp_get_attachment_url($this->imageId);
         $description = $this->pledgeText;
         if ($this->title)
-            $description = $this->title . '  ' . $this->pledgeText;
+            $description = $this->pledgeText . ' ' . $this->title;
         $url = 'https://www.tumblr.com/widgets/share/tool?canonicalUrl=' . urlencode($this->permalink) .
             '&posttype=photo' .
             '&tags=' . urlencode($this->hashtags) .
@@ -109,10 +109,11 @@ class SharingMetaData
         $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
         $twitterMedia = new TwitterMedia();
         $pic = $twitterMedia->getTwitterUrl($this->imageId);
-        $statusText = $this->pledgeText . ' ' . $pic;
+        $statusText = $this->pledgeText;
         if ($this->title) {
-            $statusText = $this->title . ' ' . $statusText;
+            $statusText = $statusText . ' ' . $this->title;
         }
+        $statusText = $statusText . ' ' . $pic;
 
         $url = 'https://twitter.com/intent/tweet?url=' . urlencode($this->permalink) .
             '&text=' . urlencode($statusText);

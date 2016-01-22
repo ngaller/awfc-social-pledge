@@ -149,9 +149,12 @@ jQuery(document).ready(function ($) {
 
     ////////////////// Sharing Functions
 
-    function validateShare(container) {
-        if (container.find('input[type=checkbox]:checked').length == 0) {
-            container.find('.pledge_selection_error').show();
+    function validateShare(container, selectedIds, shareType) {
+        if (selectedIds.length == 0) {
+            container.find('.pledge_selection_error').html('Please select your pledge first').show();
+            return false;
+        } else if(selectedIds.length > 1 && shareType == 'twitter') {
+            container.find('.pledge_selection_error').html('Please select only 1 pledge per Tweet').show();
             return false;
         } else {
             container.find('.pledge_selection_error').hide();
@@ -200,9 +203,9 @@ jQuery(document).ready(function ($) {
     // activate the sharing buttons in the designated container.
     function addShareButtons(container, pledgeCategoryUrl) {
         container.find('.share').click(function () {
-            if (validateShare(container)) {
-                var selectedIds = getPledgeIds(container);
-                var shareType = $(this).data('share-type');
+            var shareType = $(this).data('share-type');
+            var selectedIds = getPledgeIds(container);
+            if (validateShare(container, selectedIds, shareType)) {
                 var shareUrl = getSocialShareUrl(selectedIds, shareType, pledgeCategoryUrl);
                 if (shareType == 'count-only') {
                     $.ajax(shareUrl);  // no need to wait for result

@@ -206,7 +206,7 @@ function show_pledge_thumbnail()
         ?>
 
         <div class="pledge_selection_error">
-            Please select your pledge first
+
         </div>
         <div class="share_buttons">
             <input type="hidden" name="share-url" value="<?= $pledgeData->getShareUrl(); ?>"/>
