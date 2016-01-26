@@ -154,7 +154,7 @@ jQuery(document).ready(function ($) {
             container.find('.pledge_selection_error').html('Please select your pledge first').show();
             return false;
         } else if(selectedIds.length > 1 && shareType == 'twitter') {
-            container.find('.pledge_selection_error').html('Please select only 1 pledge per Tweet').show();
+            container.find('.pledge_selection_error').html('Please select only one pledge per Tweet').show();
             return false;
         } else {
             container.find('.pledge_selection_error').hide();

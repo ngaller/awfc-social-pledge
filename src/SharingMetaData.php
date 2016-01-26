@@ -81,8 +81,9 @@ class SharingMetaData
         "&redirect_uri=" . urlencode($return) .
         "&href=" . urlencode($this->permalink) .
         "&description=" . urlencode($this->pledgeText) .
-        "&picture=" . urlencode($imgUrl) .
-        "&caption=" . urlencode($this->title);
+        "&picture=" . urlencode($imgUrl);
+        // this caption will be displayed at the bottom, but we'd rather just show the site's name there
+//        "&caption=" . urlencode($this->title);
     }
 
     private function getShareUrlForGooglePlus()
