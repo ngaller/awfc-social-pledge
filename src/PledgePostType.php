@@ -35,12 +35,10 @@ class PledgePostType
                     $content = $short;
                 }
             }
-            // remove links and their content
-            $content = preg_replace('/<a.*?<\/a>/', '', $content);
-            // remove shortcodes
-            $content = preg_replace('/\[.*?\]/', '', $content);
-            // remove other tags
-            $content = wp_strip_all_tags($content, true);
+            // expanding shortcode will let us get the text from the colorbox links
+            $content = do_shortcode($content);                        
+            // remove all tags (FB would interpret them literally anyway, and display the angle brackets)
+            $content = wp_strip_all_tags($content);
             return $content;
         }, $posts);
         return join('&nbsp;&nbsp;', $content);

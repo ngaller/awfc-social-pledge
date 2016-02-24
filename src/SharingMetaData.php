@@ -75,7 +75,7 @@ class SharingMetaData
     {
         //https://www.facebook.com/dialog/feed?app_id=145634995501895&display=popup&caption=An%20example%20caption&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https://developers.facebook.com/tools/explorer
         $appId = OptionPage::getAWCOption(OptionPage::OPTION_FACEBOOK_APPID);
-        $imgUrl = wp_get_attachment_url($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId);
         $return = add_query_arg('return', '1', $this->permalink);
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
         "&redirect_uri=" . urlencode($return) .
@@ -93,7 +93,7 @@ class SharingMetaData
 
     private function getShareUrlForTumblr()
     {
-        $imgUrl = wp_get_attachment_url($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId);
         $description = $this->pledgeText;
         if ($this->title)
             $description = $this->pledgeText . ' ' . $this->title;
@@ -129,7 +129,7 @@ class SharingMetaData
 
     private function generateFacebookTags()
     {
-        $imgUrl = wp_get_attachment_url($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId);
         //$img = image_downsize($this->imageId, 'thumbnail');
 
         ?>
@@ -146,7 +146,7 @@ class SharingMetaData
 
     private function generateGooglePlusTags()
     {
-        $imgUrl = wp_get_attachment_url($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId);
         // this is opengraph, like for facebook, but we put the description as a title, because G+ does not post the
         // description apparently??
         $description = $this->title . '  ' . $this->pledgeText;
@@ -166,7 +166,7 @@ class SharingMetaData
     // we don't actually use the Twitter card right now, but just in case...
     private function generateTwitterCardTags()
     {
-        $imgUrl = wp_get_attachment_url($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId);
         ?>
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image"/>
@@ -201,6 +201,14 @@ class SharingMetaData
         if (isset($campaignData[$key])) {
             $this->title = $campaignData[$key];
         }
+    }
+
+    private static function getImageUrl($imageId) {
+        // Use the same thumbnail as the one used on the sharing dialog, but max screen size (which should be at least 768px, 
+        // sufficient for a good resolution image on FB / G+)
+        $image = PledgeDialogData::getPledgeThumbnailById(0, $imageId);
+
+        return $image[0];
     }
 
 }
