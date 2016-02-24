@@ -70,7 +70,9 @@ function show_pledge_thumbnail()
             display: block;
         }
 
-        .pledge_category_list label, .pledge_category_list .pledge_dialog_instructions {
+        .pledge_category_list label, 
+        .pledge_category_list .pledge_dialog_instructions, 
+        .pledge_category_list .pledge_dialog_pledgeinfo {
             /* match color on body (this is not inherited because we don't have grve-main-content as parent) */
             color: #6e7177;
         }
@@ -226,6 +228,7 @@ function show_pledge_thumbnail()
             <button class="btn share count-only" data-share-type="count-only">
                 Don't Share - Just Count my Pledge
             </button>
+            <p class="grve-subtitle pledge_dialog_pledgeinfo"><?= $pledgeData->getPledgeInfo(); ?></p>
         </div>
         <div class="thankyou">
             <label>Thank you for your pledge!</label>

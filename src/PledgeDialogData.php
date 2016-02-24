@@ -58,6 +58,16 @@ class PledgeDialogData
         return '';
     }
 
+    public function getPledgeInfo() 
+    {
+        if($this->socialCampaign) {
+            $data = SocialCampaignTaxonomy::parseSocialCampaign($this->socialCampaign);
+            if(isset($data['pledge-info']))
+                return $data['pledge-info'];
+        }
+        return '';
+    }
+
     /**
      * Return a URL
      *
