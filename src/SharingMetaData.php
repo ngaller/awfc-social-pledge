@@ -75,7 +75,7 @@ class SharingMetaData
     {
         //https://www.facebook.com/dialog/feed?app_id=145634995501895&display=popup&caption=An%20example%20caption&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https://developers.facebook.com/tools/explorer
         $appId = OptionPage::getAWCOption(OptionPage::OPTION_FACEBOOK_APPID);
-        $imgUrl = self::getImageUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'facebook');
         $return = add_query_arg('return', '1', $this->permalink);
         return "https://www.facebook.com/dialog/share?app_id=$appId&display=popup" .
         "&redirect_uri=" . urlencode($return) .
@@ -93,7 +93,7 @@ class SharingMetaData
 
     private function getShareUrlForTumblr()
     {
-        $imgUrl = self::getImageUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'tumblr');
         $description = $this->pledgeText;
         if ($this->title)
             $description = $this->pledgeText . ' ' . $this->title;
@@ -129,7 +129,7 @@ class SharingMetaData
 
     private function generateFacebookTags()
     {
-        $imgUrl = self::getImageUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'facebook');
         //$img = image_downsize($this->imageId, 'thumbnail');
 
         ?>
@@ -146,7 +146,7 @@ class SharingMetaData
 
     private function generateGooglePlusTags()
     {
-        $imgUrl = self::getImageUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'gplus');
         // this is opengraph, like for facebook, but we put the description as a title, because G+ does not post the
         // description apparently??
         $description = $this->title . '  ' . $this->pledgeText;
@@ -166,7 +166,7 @@ class SharingMetaData
     // we don't actually use the Twitter card right now, but just in case...
     private function generateTwitterCardTags()
     {
-        $imgUrl = self::getImageUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'twitter');
         ?>
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image"/>
@@ -203,11 +203,21 @@ class SharingMetaData
         }
     }
 
-    private static function getImageUrl($imageId) {
-        // Use the same thumbnail as the one used on the sharing dialog, but max screen size (which should be at least 768px, 
-        // sufficient for a good resolution image on FB / G+)
-        $image = PledgeDialogData::getPledgeThumbnailById(0, $imageId);
+    private static function getImageUrl($imageId, $network) {
+        // disable photon - we don't want to serve those images from the CDN
+        if(class_exists('Jetpack_Photon'))
+            $photon_removed = remove_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 
+        // use the "large" image size.  Picking a pre-determined size will allow us to watermark those specific images,
+        // even though the selected size may be too large for the device
+        $image = image_downsize($imageId, AWC_SOCIAL_PLEDGE_SHARE_IMAGE_SIZE);
+
+        // re-enable photon
+        if ( !empty($photon_removed) )
+            add_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+
+        if($network)
+            return SocialImages::resizeForNetwork($image[0], [$image[1], $image[2]], $network);
         return $image[0];
     }
 

@@ -110,14 +110,15 @@ class PledgeDialogData
         $width = self::getPledgeThumbnailWidth($screenWidth);
 
         // disable photon - we don't want to serve those images from the CDN
-        $photon_removed = remove_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+        if(class_exists('Jetpack_Photon'))
+            $photon_removed = remove_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ) );
 
         // use the "large" image size.  Picking a pre-determined size will allow us to watermark those specific images,
         // even though the selected size may be too large for the device
         $image = image_downsize($imageId, AWC_SOCIAL_PLEDGE_SHARE_IMAGE_SIZE);
 
         // re-enable photon
-        if ( $photon_removed )
+        if ( !empty($photon_removed) )
             add_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 
         // scale the image via width / height
