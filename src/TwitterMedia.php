@@ -21,12 +21,13 @@ class TwitterMedia
      * @param $imageId
      * @return mixed|string
      */
-    public function getTwitterUrl($imageId)
+    public function getTwitterUrl($imageId, $imageUrl)
     {
         $url = get_post_meta($imageId, 'twitter_url', true);
         // wonder if we should test it to make sure it is still OK?
         if (!$url) {
-            $url = $this->uploadPicture($imageId);
+            $path = SocialImages::getImagePath($imageUrl);
+            $url = $this->uploadPicture($imageId, $path);
             update_post_meta($imageId, 'twitter_url', $url);
         }
         return $url;
@@ -38,9 +39,8 @@ class TwitterMedia
      * @param int $imageId
      * @return string
      */
-    private function uploadPicture($imageId)
+    private function uploadPicture($imageId, $path)
     {
-        $path = $this->getImagePath($imageId);
         $title = get_the_title($imageId);
         $connection = (new TwitterLogin())->getTwitterConnection();
         $media = $connection->upload('media/upload', ['media' => $path]);
@@ -68,21 +68,5 @@ class TwitterMedia
             error_log('Could not find t.co reference in ' . $statusText);
             return '';
         }
-    }
-
-    /**
-     * Return local path to "large" version of the image
-     *
-     * @param int $imageId
-     * @return string
-     */
-    private function getImagePath($imageId)
-    {
-        $path = get_attached_file($imageId);
-        $resized = image_get_intermediate_size($imageId, AWC_SOCIAL_PLEDGE_SHARE_IMAGE_SIZE);
-        if ($resized) {
-            $path = str_replace(basename($path), $resized['file'], $path);
-        }
-        return $path;
     }
 }

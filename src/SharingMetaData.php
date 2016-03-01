@@ -108,8 +108,10 @@ class SharingMetaData
     private function getShareUrlForTwitter()
     {
         $via = OptionPage::getAWCOption(OptionPage::OPTION_TWITTER_SCREENNAME);
+        // $pic = $twitterMedia->getTwitterUrl($this->imageId);
+        $imgUrl = self::getImageUrl($this->imageId, 'twitter');
         $twitterMedia = new TwitterMedia();
-        $pic = $twitterMedia->getTwitterUrl($this->imageId);
+        $pic = $twitterMedia->getTwitterUrl($this->imageId, $imgUrl);
         $statusText = $this->pledgeText;
         if ($this->title) {
             $statusText = $statusText . ' ' . $this->title;
@@ -216,8 +218,9 @@ class SharingMetaData
         if ( !empty($photon_removed) )
             add_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
 
-        if($network)
-            return SocialImages::resizeForNetwork($image[0], [$image[1], $image[2]], $network);
+        if($network) {
+            return SocialImages::resizeForNetwork($image[0], $imageId, [$image[1], $image[2]], $network);
+        }
         return $image[0];
     }
 
