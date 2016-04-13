@@ -81,7 +81,7 @@ jQuery(document).ready(function ($) {
             content.html(result);
             $('<div class="dlg_close">&times;</div>').prependTo(content)
                 .click(closeLightbox);
-            var imgContainer = content.find('.pledge_category_list');
+            var imgContainer = content.find('.pledge_category_image');
             if (imgContainer.length) {
                 content.width(imgContainer.width());
             }
