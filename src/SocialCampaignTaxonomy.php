@@ -24,7 +24,7 @@ class SocialCampaignTaxonomy
 
     private function registerTaxonomy()
     {
-        register_taxonomy(self::TAXONOMY, self::PORTFOLIO_POST_TYPE, [
+        register_taxonomy(self::TAXONOMY, [self::PORTFOLIO_POST_TYPE, 'post'], [
             'labels' => [
                 'name' => 'Social Campaigns',
                 'singular_name' => 'Social Campaign',
