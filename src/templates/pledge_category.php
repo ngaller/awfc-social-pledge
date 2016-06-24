@@ -34,6 +34,17 @@ function show_pledge_thumbnail()
     }
 }
 
+function printPledgeCount() 
+{
+    global $pledgeData;
+    
+    $count = $pledgeData->getPledgeCount();
+    if($count) {
+        $s = $count > 1 ? "s" : "";
+        $has = $count >1 ? "have" : "has";
+        echo "$count other$s $has pledged!";
+    }
+}
 
 ?>
     <!--suppress CssUnusedSymbol -->
@@ -235,6 +246,7 @@ function show_pledge_thumbnail()
             </button>
         </div>
         <p class="grve-subtitle pledge_dialog_pledgeinfo"><?= $pledgeData->getPledgeInfo(); ?></p>
+        <p class="grve-subtitle pledge_dialog_pledgecount"><?php printPledgeCount(); ?></p>
         <div class="thankyou">
             <label>Thank you for your pledge!</label>
         </div>

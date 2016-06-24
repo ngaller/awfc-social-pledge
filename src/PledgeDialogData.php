@@ -52,20 +52,28 @@ class PledgeDialogData
     {
         if ($this->socialCampaign) {
             $data = SocialCampaignTaxonomy::parseSocialCampaign($this->socialCampaign);
-            if(isset($data['instructions']))
+            if (isset($data['instructions']))
                 return $data['instructions'];
         }
         return '';
     }
 
-    public function getPledgeInfo() 
+    public function getPledgeInfo()
     {
-        if($this->socialCampaign) {
+        if ($this->socialCampaign) {
             $data = SocialCampaignTaxonomy::parseSocialCampaign($this->socialCampaign);
-            if(isset($data['pledge-info']))
+            if (isset($data['pledge-info']))
                 return $data['pledge-info'];
         }
         return '';
+    }
+
+    public function getPledgeCount()
+    {
+        if ($this->socialCampaign) {
+            return SocialCampaignTaxonomy::getPledgeCount($this->socialCampaign);
+        }
+        return 0;
     }
 
     /**
@@ -105,21 +113,21 @@ class PledgeDialogData
      * @param int $imageId
      * @return array - URL, width, height
      */
-    public static function getPledgeThumbnailById($screenWidth, $imageId) 
+    public static function getPledgeThumbnailById($screenWidth, $imageId)
     {
         $width = self::getPledgeThumbnailWidth($screenWidth);
 
         // disable photon - we don't want to serve those images from the CDN
-        if(class_exists('Jetpack_Photon'))
-            $photon_removed = remove_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ) );
+        if (class_exists('Jetpack_Photon'))
+            $photon_removed = remove_filter('image_downsize', array(\Jetpack_Photon::instance(), 'filter_image_downsize'));
 
         // use the "large" image size.  Picking a pre-determined size will allow us to watermark those specific images,
         // even though the selected size may be too large for the device
         $image = image_downsize($imageId, AWC_SOCIAL_PLEDGE_SHARE_IMAGE_SIZE);
 
         // re-enable photon
-        if ( !empty($photon_removed) )
-            add_filter( 'image_downsize', array( \Jetpack_Photon::instance(), 'filter_image_downsize' ), 10, 3 );
+        if (!empty($photon_removed))
+            add_filter('image_downsize', array(\Jetpack_Photon::instance(), 'filter_image_downsize'), 10, 3);
 
         // scale the image via width / height
         $size = image_constrain_size_for_editor($image[1], $image[2], [$width, $width]);

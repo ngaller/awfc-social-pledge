@@ -64,6 +64,22 @@ class SocialCampaignTaxonomy
     }
 
     /**
+     * Get number of social share posts related to this campaign.
+     * 
+     * @param \WP_Term $socialCampaign
+     * @return int
+     */
+    public static function getPledgeCount($socialCampaign)
+    {
+        global $wpdb;
+        
+        $sth = $wpdb->prepare("select count(*) from $wpdb->posts where post_title = %s and post_type = %s",
+            $socialCampaign->slug, SocialSharePostType::POST_TYPE);
+        $count = $wpdb->get_col($sth);
+        return $count ? (int)$count[0] : 0;
+    }
+
+    /**
      * Given a term object (social campaign), this returns the associative array of key = value pairs defined
      * within the term's description.
      *
