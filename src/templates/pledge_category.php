@@ -60,7 +60,7 @@ function show_pledge_thumbnail()
 
         .pledge_category_list label {
             text-transform: none;
-            font-weight: normal;
+            font-weight: bold;
             /* set font-size to counter-act "10px" setting marked important in theme */
             font-size: inherit !important;
             line-height: 1.5;
@@ -113,6 +113,7 @@ function show_pledge_thumbnail()
 
         .pledge_category {
             display: block;
+            font-size: 16px;
         }
 
         .pledge_category_list .thumbnail_container {
@@ -187,6 +188,7 @@ function show_pledge_thumbnail()
          style="min-width: <?= $screenWidth ? PledgeDialogData::getPledgeThumbnailWidth($screenWidth) : 0 ?>px;">
         <p class="grve-subtitle pledge_dialog_instructions"><?= $pledgeData->getInstructions(); ?></p>
         <div class="thumbnail_container">
+            <!--TODO RCW recive image --> 
             <?php show_pledge_thumbnail(); ?>
         </div>
 
@@ -223,14 +225,16 @@ function show_pledge_thumbnail()
             <button class="btn share gplus" data-share-type="gplus">
                 <i class="fa fa-google-plus"></i> Google+
             </button>
-            <button class="btn share tumblr" data-share-type="tumblr">
+            <!--
+                <button class="btn share tumblr" data-share-type="tumblr">
                 <i class="fa fa-tumblr"></i> Tumblr
             </button>
+            -->
             <button class="btn share count-only" data-share-type="count-only">
                 Don't Share - Just Count my Pledge
             </button>
-            <p class="grve-subtitle pledge_dialog_pledgeinfo"><?= $pledgeData->getPledgeInfo(); ?></p>
         </div>
+        <p class="grve-subtitle pledge_dialog_pledgeinfo"><?= $pledgeData->getPledgeInfo(); ?></p>
         <div class="thankyou">
             <label>Thank you for your pledge!</label>
         </div>
