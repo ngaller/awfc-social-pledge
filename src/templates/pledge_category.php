@@ -183,7 +183,7 @@ function show_pledge_thumbnail()
         }
     </style>
 
-    <div class="pledge_category_list"
+    <div class="pledge_category_list <?= $pledgeData->getHashtags(); ?>"
          style="min-width: <?= $screenWidth ? PledgeDialogData::getPledgeThumbnailWidth($screenWidth) : 0 ?>px;">
         <p class="grve-subtitle pledge_dialog_instructions"><?= $pledgeData->getInstructions(); ?></p>
         <div class="thumbnail_container">
